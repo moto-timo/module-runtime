@@ -1,1 +1,5 @@
   * explicitly declare lack of module dependencies in Makefile.PL
+
+version 0.000; 2004-02-15
+
+  * initial released version
