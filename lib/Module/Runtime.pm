@@ -5,14 +5,17 @@ Module::Runtime - runtime module handling
 =head1 SYNOPSIS
 
 	use Module::Runtime qw(is_valid_module_name require_module
+			use_module
 			is_valid_module_spec compose_module_name);
 
-	$ok = is_valid_module_name($ARGV[0]);
-	require_module($ARGV[0]);
+	$ok = is_valid_module_name($module);
+	require_module($module);
 
-	$ok = is_valid_module_spec("Standard::Prefix", $ARGV[0]);
+	$bi = use_module("Math::BigInt", 1.31)->new("1_234");
+
+	$ok = is_valid_module_spec("Standard::Prefix", $spec);
 	$module_name = compose_module_name("Standard::Prefix",
-						$ARGV[0]);
+						$spec);
 
 =head1 DESCRIPTION
 
@@ -35,6 +38,7 @@ our @ISA = qw(Exporter);
 
 our @EXPORT_OK = qw(
 	is_valid_module_name require_module
+	use_module
 	is_valid_module_spec compose_module_name
 );
 
@@ -73,12 +77,44 @@ in the manner of the bareword form of C<require>.  That means that a
 search through C<@INC> is performed, and a byte-compiled form of the
 module will be used if available.
 
+The return value is as for C<require>.  That is, it is the value returned
+by the module itself if the module is loaded anew, or 1 if the module
+was already loaded.
+
 =cut
 
 sub require_module($) {
 	my($name) = @_;
 	croak "bad module name `$name'" unless is_valid_module_name($name);
 	eval("require ".$name) || die $@;
+}
+
+=item use_module(NAME[, VERSION)
+
+This is essentially C<use> in runtime form, but without the "import"
+feature (which is fundamentally a compile-time thing).  The NAME is
+handled just like in C<require_module> above: it must be a module name,
+and the named module is loaded as if by the bareword form of C<require>.
+
+If a VERSION is specified, the "VERSION" method of the loaded module is
+called with the specified VERSION as an argument.  This normally serves to
+ensure that the version loaded is at least the version required.  This is
+the same functionality provided by the VERSION parameter of C<use>.
+
+On success, the name of the module is returned.  This is unlike
+C<require_module>, and is done so that the entire call to C<use_module>
+can be used as a class name to call a constructor, as in the example in
+the synopsis.
+
+=cut
+
+sub use_module($;$) {
+	my($name, $version) = @_;
+	require_module($name);
+	if(defined $version) {
+		$name->VERSION($version);
+	}
+	return $name;
 }
 
 =item is_valid_module_spec(PREFIX, SPEC)
@@ -136,7 +172,8 @@ sub compose_module_name($$) {
 
 =head1 SEE ALSO
 
-L<perlfunc/require>
+L<perlfunc/require>,
+L<perlfunc/use>
 
 =head1 AUTHOR
 

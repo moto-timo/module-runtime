@@ -1,3 +1,7 @@
+  * new function use_module()
+
+  * document return value of require_module()
+
   * more stringent tests for the return value of require_module()
 
   * explicitly declare lack of module dependencies in Makefile.PL
