@@ -25,7 +25,7 @@ is($err, "");
 is($result, "Math::Complex");
 
 # successful version check
-test_use_module("Module::Runtime", 0.000);
+test_use_module("Module::Runtime", 0.001);
 is($err, "");
 is($result, "Module::Runtime");
 

@@ -1,3 +1,5 @@
+version 0.001; 2004-10-29
+
   * new function use_module()
 
   * document return value of require_module()

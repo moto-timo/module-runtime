@@ -32,7 +32,7 @@ use strict;
 use Carp qw(croak);
 use Exporter;
 
-our $VERSION = "0.000";
+our $VERSION = "0.001";
 
 our @ISA = qw(Exporter);
 
