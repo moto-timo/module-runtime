@@ -1,3 +1,5 @@
+  * more stringent tests for the return value of require_module()
+
   * explicitly declare lack of module dependencies in Makefile.PL
 
   * include Changes file

@@ -1,4 +1,4 @@
-use Test::More tests => 9;
+use Test::More tests => 8;
 
 BEGIN { use_ok "Module::Runtime", qw(require_module); }
 
@@ -12,20 +12,19 @@ sub test_require_module($) {
 
 # a module that doesn't exist
 test_require_module("module::that::does::not::exist");
-ok(!$result);
 like($err, qr/^Can't locate /);
 
 # a module that's already loaded
 test_require_module("Test::More");
-ok($result);
 is($err, "");
+is($result, 1);
 
 # a module that we'll load now
 test_require_module("Math::Complex");
-ok($result);
 is($err, "");
+ok($result);
 
 # re-requiring the module that we just loaded
 test_require_module("Math::Complex");
-ok($result);
 is($err, "");
+is($result, 1);
