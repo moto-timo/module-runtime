@@ -1,0 +1,1 @@
+  * explicitly declare lack of module dependencies in Makefile.PL
