@@ -42,7 +42,7 @@ our @EXPORT_OK = qw(
 
 =over
 
-=item C<< is_valid_module_name(I<STRING>) >>
+=item is_valid_module_name(STRING)
 
 This tests whether a string is a valid Perl module name, i.e., has valid
 bareword syntax.  The rule for this, precisely, is: the string must
@@ -61,14 +61,14 @@ sub is_valid_module_name($) {
 	$string =~ m#\A[a-zA-Z_]\w*(?:::\w+)*\z#
 }
 
-=item C<< require_module(I<NAME>) >>
+=item require_module(NAME)
 
 This is essentially the bareword form of C<require>, in runtime form.
-The I<NAME> is a string, which should be a valid module name (one or
+The NAME is a string, which should be a valid module name (one or
 more C<::>-separated segments).  If it is not a valid name, the function
 C<die>s.
 
-The module specified by I<NAME> is loaded, if it hasn't been already,
+The module specified by NAME is loaded, if it hasn't been already,
 in the manner of the bareword form of C<require>.  That means that a
 search through C<@INC> is performed, and a byte-compiled form of the
 module will be used if available.
@@ -81,12 +81,12 @@ sub require_module($) {
 	eval("require ".$name) || die $@;
 }
 
-=item C<< is_valid_module_spec(I<PREFIX>, I<SPEC>) >>
+=item is_valid_module_spec(PREFIX, SPEC)
 
-Tests whether I<SPEC> is valid input for C<compose_module_name()>.
-See below for what that entails.  Whether a I<PREFIX> is supplied affects
-the validity of I<SPEC>, but the exact value of the prefix is unimportant,
-so this function treats I<PREFIX> as a boolean.
+Tests whether SPEC is valid input for C<compose_module_name()>.
+See below for what that entails.  Whether a PREFIX is supplied affects
+the validity of SPEC, but the exact value of the prefix is unimportant,
+so this function treats PREFIX as a boolean.
 
 =cut
 
@@ -96,23 +96,23 @@ sub is_valid_module_spec($$) {
 		|| $spec =~ m{\A(?:/|::)?([a-zA-Z_]\w*(?:(?:/|::)\w+)*)\z};
 }
 
-=item C<< compose_module_name(I<PREFIX>, I<SPEC>) >>
+=item compose_module_name(PREFIX, SPEC)
 
 This function is intended to make it more convenient for a user to specify
 a Perl module name at runtime.  Users have greater need for abbreviations
 and context-sensitivity than programmers, and Perl module names get a
-little unwieldy.  I<SPEC> is what the user specifies, and this function
+little unwieldy.  SPEC is what the user specifies, and this function
 translates it into a module name in standard form, which it returns.
 
-I<SPEC> has syntax approximately that of a standard module name: it
+SPEC has syntax approximately that of a standard module name: it
 should consist of one or more name segments, each of which consists
 of one or more identifier characters.  However, C</> is permitted as a
 separator, in addition to the standard C<::>.  The two separators are
 entirely interchangeable.
 
-Additionally, if I<PREFIX> is not C<undef> then it must be a module
+Additionally, if PREFIX is not C<undef> then it must be a module
 name in standard form, and it is prefixed to the user-specified name.
-The user can inhibit the prefix addition by starting I<SPEC> with a
+The user can inhibit the prefix addition by starting SPEC with a
 separator (either C</> or C<::>).
 
 =cut
