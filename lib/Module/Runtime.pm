@@ -89,7 +89,7 @@ sub require_module($) {
 	eval("require ".$name) || die $@;
 }
 
-=item use_module(NAME[, VERSION)
+=item use_module(NAME[, VERSION])
 
 This is essentially C<use> in runtime form, but without the "import"
 feature (which is fundamentally a compile-time thing).  The NAME is

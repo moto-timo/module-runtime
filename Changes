@@ -1,3 +1,5 @@
+  * insert missing bracket in documentation for use_module()
+
 version 0.001; 2004-10-29
 
   * new function use_module()
