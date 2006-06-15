@@ -5,13 +5,14 @@ Module::Runtime - runtime module handling
 =head1 SYNOPSIS
 
 	use Module::Runtime qw(is_valid_module_name require_module
-			use_module
+			use_module use_package_optimistically
 			is_valid_module_spec compose_module_name);
 
 	$ok = is_valid_module_name($module);
 	require_module($module);
 
 	$bi = use_module("Math::BigInt", 1.31)->new("1_234");
+	$widget = use_package_optimistically("Local::Widget")->new;
 
 	$ok = is_valid_module_spec("Standard::Prefix", $spec);
 	$module_name = compose_module_name("Standard::Prefix",
@@ -38,7 +39,7 @@ our @ISA = qw(Exporter);
 
 our @EXPORT_OK = qw(
 	is_valid_module_name require_module
-	use_module
+	use_module use_package_optimistically
 	is_valid_module_spec compose_module_name
 );
 
@@ -117,6 +118,61 @@ sub use_module($;$) {
 	return $name;
 }
 
+=item use_package_optimistically(NAME[, VERSION])
+
+This is an analogue of C<use_module> for the situation where there is
+uncertainty as to whether a package/class is defined in its own module
+or by some other means.  It attempts to arrange for the named package to
+be available, either by loading a module or by doing nothing and hoping.
+
+If the package does not appear to already be loaded then an attempt is
+made to load the module of the same name (as if by the bareword form
+of C<require>).  If the module cannot be found then it is assumed that
+the package was actually already loaded but wasn't detected correctly,
+and no error is signalled.  That's the optimistic bit.
+
+For the purposes of this function, package existence is checked by whether
+a C<$VERSION> variable exists in the package.  If the module wasn't found,
+or if it was loaded but didn't create a C<$VERSION> variable, then such a
+variable is automatically created (with value C<undef>) so that repeated
+use of this function won't redundantly attempt to load the module.
+
+This is mostly the same operation that is performed by the C<base>
+pragma to ensure that the specified base classes are available.
+The difference is that C<base> does not allow the C<$VERSION> variable
+to remain undefined: it will set it to "-1, set by base.pm" if it does
+not otherwise have a non-null value.
+
+If a VERSION is specified, the "VERSION" method of the loaded package is
+called with the specified VERSION as an argument.  This normally serves
+to ensure that the version loaded is at least the version required.
+On success, the name of the package is returned.  These aspects of the
+function work just like C<use_module>.
+
+=cut
+
+sub has_version_var($) {
+	my($name) = @_;
+	no strict "refs";
+	my $vg = ${"${name}::"}{VERSION};
+	return $vg && *{$vg}{SCALAR};
+}
+
+sub use_package_optimistically($;$) {
+	my($name, $version) = @_;
+	croak "bad module name `$name'" unless is_valid_module_name($name);
+	unless(has_version_var($name)) {
+		eval "require $name";
+		die $@ if $@ ne "" && $@ !~ /\ACan't locate .* at \(eval /;
+		unless(has_version_var($name)) {
+			no strict "refs";
+			${"${name}::VERSION"} = undef;
+		}
+	}
+	$name->VERSION($version) if defined $version;
+	return $name;
+}
+
 =item is_valid_module_spec(PREFIX, SPEC)
 
 Tests whether SPEC is valid input for C<compose_module_name()>.
@@ -172,6 +228,7 @@ sub compose_module_name($$) {
 
 =head1 SEE ALSO
 
+L<base>,
 L<perlfunc/require>,
 L<perlfunc/use>
 
