@@ -1,3 +1,5 @@
+version 0.002; 2006-06-15
+
   * new function use_package_optimistically() to duplicate the "base"
     pragma's quiet module loading
 

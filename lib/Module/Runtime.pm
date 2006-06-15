@@ -33,7 +33,7 @@ use strict;
 use Carp qw(croak);
 use Exporter;
 
-our $VERSION = "0.001";
+our $VERSION = "0.002";
 
 our @ISA = qw(Exporter);
 
@@ -238,7 +238,7 @@ Andrew Main (Zefram) <zefram@fysh.org>
 
 =head1 COPYRIGHT
 
-Copyright (C) 2004 Andrew Main (Zefram) <zefram@fysh.org>
+Copyright (C) 2004, 2006 Andrew Main (Zefram) <zefram@fysh.org>
 
 This module is free software; you can redistribute it and/or modify it
 under the same terms as Perl itself.
