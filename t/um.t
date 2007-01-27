@@ -31,4 +31,4 @@ is($result, "Module::Runtime");
 
 # failing version check
 test_use_module("Module::Runtime", 999);
-like($err, qr/^Module::Runtime version 999 required/);
+like($err, qr/^Module::Runtime version /);

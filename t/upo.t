@@ -33,7 +33,7 @@ is $result, "Module::Runtime";
 
 # failing version check
 test_use_package_optimistically("Module::Runtime", 999);
-like $err, qr/^Module::Runtime version 999 required/;
+like $err, qr/^Module::Runtime version /;
 
 # don't load module if $VERSION already set, although "require" will
 $Math::BigInt::VERSION = undef;
