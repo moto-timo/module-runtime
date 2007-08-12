@@ -1,3 +1,5 @@
+version 0.004; 2007-08-12
+
   * change choice of module to test use_package_optimistically(), because
     some old versions of Math::BigInt don't have a version number which
     was causing a false test failure
