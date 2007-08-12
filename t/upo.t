@@ -36,10 +36,10 @@ test_use_package_optimistically("Module::Runtime", 999);
 like $err, qr/^Module::Runtime version /;
 
 # don't load module if $VERSION already set, although "require" will
-$Math::BigInt::VERSION = undef;
-test_use_package_optimistically("Math::BigInt");
+$Math::Trig::VERSION = undef;
+test_use_package_optimistically("Math::Trig");
 is $err, "";
-is $result, "Math::BigInt";
-ok !defined($Math::BigInt::VERSION);
-require Math::BigInt;
-ok defined($Math::BigInt::VERSION);
+is $result, "Math::Trig";
+ok !defined($Math::Trig::VERSION);
+require Math::Trig;
+ok defined($Math::Trig::VERSION);

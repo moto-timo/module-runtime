@@ -1,3 +1,7 @@
+  * change choice of module to test use_package_optimistically(), because
+    some old versions of Math::BigInt don't have a version number which
+    was causing a false test failure
+
 version 0.003; 2007-01-27
 
   * loosen tests to work with perl v5.9's changed diagnostics
