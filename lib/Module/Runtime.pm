@@ -87,7 +87,7 @@ was already loaded.
 sub require_module($) {
 	my($name) = @_;
 	croak "bad module name `$name'" unless is_valid_module_name($name);
-	eval("require ".$name) || die $@;
+	eval("local \$SIG{__DIE__}; require $name") || die $@;
 }
 
 =item use_module(NAME[, VERSION])
@@ -162,7 +162,7 @@ sub use_package_optimistically($;$) {
 	my($name, $version) = @_;
 	croak "bad module name `$name'" unless is_valid_module_name($name);
 	unless(has_version_var($name)) {
-		eval "require $name";
+		eval "local \$SIG{__DIE__}; require $name";
 		die $@ if $@ ne "" && $@ !~ /\ACan't locate .* at \(eval /;
 		unless(has_version_var($name)) {
 			no strict "refs";
