@@ -11,6 +11,8 @@
 
   * include signature in distribution
 
+  * in documentation, separate "license" section from "copyright" section
+
 version 0.004; 2007-08-12
 
   * change choice of module to test use_package_optimistically(), because
