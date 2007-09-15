@@ -31,12 +31,10 @@ use warnings;
 use strict;
 
 use Carp qw(croak);
-use Exporter;
 
 our $VERSION = "0.004";
 
-our @ISA = qw(Exporter);
-
+use base "Exporter";
 our @EXPORT_OK = qw(
 	is_valid_module_name require_module
 	use_module use_package_optimistically

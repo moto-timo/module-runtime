@@ -19,6 +19,7 @@ Module::Build->new(
 	requires => {
 		Carp => 0,
 		Exporter => 0,
+		base => 0,
 		perl => "5.006",
 		strict => 0,
 		warnings => 0,
