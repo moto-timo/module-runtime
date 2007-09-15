@@ -2,6 +2,9 @@
 
   * use "base" pragma to import Exporter behaviour
 
+  * test POD syntax and coverage, and rename an internal function to
+    satisfy the coverage test
+
   * build with Module::Build instead of ExtUtils::MakeMaker
 
   * complete dependency list

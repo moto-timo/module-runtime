@@ -9,6 +9,8 @@ lib/Module/Runtime.pm
 t/cmn.t
 t/ivmn.t
 t/ivms.t
+t/pod_cvg.t
+t/pod_syn.t
 t/rm.t
 t/um.t
 t/upo.t

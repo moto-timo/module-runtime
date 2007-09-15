@@ -149,7 +149,7 @@ function work just like C<use_module>.
 
 =cut
 
-sub has_version_var($) {
+sub _has_version_var($) {
 	my($name) = @_;
 	no strict "refs";
 	my $vg = ${"${name}::"}{VERSION};
@@ -159,10 +159,10 @@ sub has_version_var($) {
 sub use_package_optimistically($;$) {
 	my($name, $version) = @_;
 	croak "bad module name `$name'" unless is_valid_module_name($name);
-	unless(has_version_var($name)) {
+	unless(_has_version_var($name)) {
 		eval "local \$SIG{__DIE__}; require $name";
 		die $@ if $@ ne "" && $@ !~ /\ACan't locate .* at \(eval /;
-		unless(has_version_var($name)) {
+		unless(_has_version_var($name)) {
 			no strict "refs";
 			${"${name}::VERSION"} = undef;
 		}
