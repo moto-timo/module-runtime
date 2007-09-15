@@ -9,10 +9,10 @@ modules, which are normally handled at compile time.
 
 INSTALLATION
 
-	perl Makefile.PL
-	make
-	make test
-	make install
+	perl Build.PL
+	./Build
+	./Build test
+	./Build install
 
 AUTHOR
 
