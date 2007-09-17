@@ -32,7 +32,7 @@ use strict;
 
 use Carp qw(croak);
 
-our $VERSION = "0.004";
+our $VERSION = "0.005";
 
 use base "Exporter";
 our @EXPORT_OK = qw(
