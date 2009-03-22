@@ -176,7 +176,7 @@ sub use_package_optimistically($;$) {
 Tests whether SPEC is valid input for C<compose_module_name()>.
 See below for what that entails.  Whether a PREFIX is supplied affects
 the validity of SPEC, but the exact value of the prefix is unimportant,
-so this function treats PREFIX as a boolean.
+so this function treats PREFIX as a truth value.
 
 =cut
 

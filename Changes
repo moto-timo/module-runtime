@@ -1,3 +1,6 @@
+  * in documentation, use the term "truth value" instead of the less
+    precise "boolean"
+
   * use full stricture in Build.PL
 
 version 0.005; 2007-09-17
