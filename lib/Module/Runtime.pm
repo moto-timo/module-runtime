@@ -34,7 +34,7 @@ use Carp qw(croak);
 
 our $VERSION = "0.005";
 
-use base "Exporter";
+use parent "Exporter";
 our @EXPORT_OK = qw(
 	is_valid_module_name require_module
 	use_module use_package_optimistically
