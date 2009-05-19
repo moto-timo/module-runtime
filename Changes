@@ -1,3 +1,7 @@
+  * bugfix: avoid unreliable "\w" in regexps in code
+
+  * document that module name syntax is restricted to ASCII
+
   * use simpler "parent" pragma in place of "base"
 
   * in documentation, use the term "truth value" instead of the less
