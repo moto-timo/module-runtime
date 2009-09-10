@@ -1,3 +1,5 @@
+  * remove bogus "exit 0" from Build.PL
+
 version 0.006; 2009-05-19
 
   * bugfix: avoid unreliable "\w" in regexps in code
