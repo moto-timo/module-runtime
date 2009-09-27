@@ -27,6 +27,7 @@ modules, which are normally handled at compile time.
 
 package Module::Runtime;
 
+{ use 5.006; }
 use warnings;
 use strict;
 
