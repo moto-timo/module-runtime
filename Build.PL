@@ -7,6 +7,9 @@ use Module::Build;
 Module::Build->new(
 	module_name => "Module::Runtime",
 	license => "perl",
+	configure_requires => {
+		"Module::Build" => 0,
+	},
 	build_requires => {
 		"Math::Complex" => 0,
 		"Math::Trig" => 0,
