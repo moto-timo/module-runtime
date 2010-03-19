@@ -4,19 +4,26 @@ Module::Runtime - runtime module handling
 
 =head1 SYNOPSIS
 
-	use Module::Runtime qw(is_valid_module_name require_module
-			use_module use_package_optimistically
-			is_valid_module_spec compose_module_name);
+	use Module::Runtime qw(
+		$module_name_rx is_valid_module_name require_module
+	);
 
-	$ok = is_valid_module_name($module);
-	require_module($module);
+	if($module_name =~ /\A$module_name_rx\z/o) { ...
+	if(is_valid_module_name($module_name)) { ...
+	require_module($module_name);
+
+	use Module::Runtime qw(use_module use_package_optimistically);
 
 	$bi = use_module("Math::BigInt", 1.31)->new("1_234");
 	$widget = use_package_optimistically("Local::Widget")->new;
 
-	$ok = is_valid_module_spec("Standard::Prefix", $spec);
-	$module_name = compose_module_name("Standard::Prefix",
-						$spec);
+	use Module::Runtime qw(
+		is_valid_module_spec compose_module_name
+	);
+
+	if(is_valid_module_spec("Standard::Prefix", $spec)) { ...
+	$module_name =
+		compose_module_name("Standard::Prefix", $spec);
 
 =head1 DESCRIPTION
 
@@ -32,24 +39,29 @@ use warnings;
 use strict;
 
 use Carp qw(croak);
+use Params::Classify qw(is_string);
 
 our $VERSION = "0.006";
 
 use parent "Exporter";
 our @EXPORT_OK = qw(
-	is_valid_module_name require_module
+	$module_name_rx is_valid_module_name require_module
 	use_module use_package_optimistically
 	is_valid_module_spec compose_module_name
 );
 
-=head1 FUNCTIONS
+=head1 REGULAR EXPRESSIONS
+
+These regular expressions do not include any anchors, so to check
+whether an entire string matches a syntax item you must supply the
+anchors yourself.
 
 =over
 
-=item is_valid_module_name(STRING)
+=item $module_name_rx
 
-This tests whether a string is a valid Perl module name, i.e., has valid
-bareword syntax.  The rule for this, precisely, is: the string must
+Matches a valid Perl module name in bareword syntax.
+The rule for this, precisely, is: the string must
 consist of one or more segments separated by C<::>; each segment must
 consist of one or more identifier characters (alphanumerics plus "_");
 the first character of the string must not be a digit.  Thus "C<IO::File>",
@@ -57,15 +69,26 @@ the first character of the string must not be a digit.  Thus "C<IO::File>",
 "C<IO::>" and "C<1foo::bar>" are not.
 Only ASCII characters are permitted; Perl's handling of non-ASCII
 characters in source code is inconsistent.
-
-Note that C<'> separators are I<not> permitted by this function.
+C<'> separators are not permitted.
 
 =cut
 
-sub is_valid_module_name($) {
-	my($string) = @_;
-	$string =~ m#\A[a-zA-Z_][0-9a-zA-Z_]*(?:::[0-9a-zA-Z_]+)*\z#
-}
+our $module_name_rx = qr/[A-Z_a-z][0-9A-Z_a-z]*(?:::[0-9A-Z_a-z]+)*/;
+
+=back
+
+=head1 FUNCTIONS
+
+=over
+
+=item is_valid_module_name(ARG)
+
+Returns a truth value indicating whether I<ARG> is a plain string
+satisfying Perl module name syntax as described for L</$module_name_rx>.
+
+=cut
+
+sub is_valid_module_name($) { &is_string && $_[0] =~ /\A$module_name_rx\z/o }
 
 =item require_module(NAME)
 
@@ -191,12 +214,13 @@ so this function treats I<PREFIX> as a truth value.
 
 sub is_valid_module_spec($$) {
 	my($prefix, $spec) = @_;
-	return ($prefix && $spec =~ m{\A
+	return is_string($spec) &&
+		(($prefix && $spec =~ m{\A
 				      [0-9][0-9a-zA-Z_]*
 				      (?:(?:/|::)[0-9a-zA-Z_]+)*\z}x) ||
-		($spec =~ m{\A(?:/|::)?
+		 ($spec =~ m{\A(?:/|::)?
 			    [a-zA-Z_][0-9a-zA-Z_]*
-			    (?:(?:/|::)[0-9a-zA-Z_]+)*\z}x);
+			    (?:(?:/|::)[0-9a-zA-Z_]+)*\z}x));
 }
 
 =item compose_module_name(PREFIX, SPEC)

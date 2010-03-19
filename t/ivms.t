@@ -1,6 +1,18 @@
-use Test::More tests => 39;
+use Test::More tests => 51;
 
 BEGIN { use_ok "Module::Runtime", qw(is_valid_module_spec); }
+
+foreach my $name (
+	undef,
+	*STDOUT,
+	\"Foo",
+	[],
+	{},
+	sub{},
+) {
+	ok(!is_valid_module_spec(0, $name), "non-string is bad (function)");
+	ok(!is_valid_module_spec(1, $name), "non-string is bad (function)");
+}
 
 foreach my $spec (qw(
 	Foo

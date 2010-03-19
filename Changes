@@ -1,3 +1,7 @@
+  * supply regexp to check module name syntax
+
+  * in "is_" functions, also cleanly handle non-string arguments
+
   * in require_module() (also affecting use_module()), call require()
     as a function (with appropriate name translation) instead of using
     string eval, to avoid unnecessary complication of exception handling
