@@ -4,12 +4,11 @@ Module::Runtime - runtime module handling
 
 =head1 SYNOPSIS
 
-	use Module::Runtime qw(
-		$module_name_rx is_valid_module_name require_module
-	);
+	use Module::Runtime
+		qw($module_name_rx is_module_name require_module);
 
 	if($module_name =~ /\A$module_name_rx\z/o) { ...
-	if(is_valid_module_name($module_name)) { ...
+	if(is_module_name($module_name)) { ...
 	require_module($module_name);
 
 	use Module::Runtime qw(use_module use_package_optimistically);
@@ -18,10 +17,10 @@ Module::Runtime - runtime module handling
 	$widget = use_package_optimistically("Local::Widget")->new;
 
 	use Module::Runtime qw(
-		is_valid_module_spec compose_module_name
+		is_module_spec compose_module_name
 	);
 
-	if(is_valid_module_spec("Standard::Prefix", $spec)) { ...
+	if(is_module_spec("Standard::Prefix", $spec)) { ...
 	$module_name =
 		compose_module_name("Standard::Prefix", $spec);
 
@@ -45,9 +44,9 @@ our $VERSION = "0.006";
 
 use parent "Exporter";
 our @EXPORT_OK = qw(
-	$module_name_rx is_valid_module_name require_module
+	$module_name_rx is_module_name is_valid_module_name require_module
 	use_module use_package_optimistically
-	is_valid_module_spec compose_module_name
+	is_module_spec is_valid_module_spec compose_module_name
 );
 
 =head1 REGULAR EXPRESSIONS
@@ -79,16 +78,26 @@ our $module_name_rx = qr/[A-Z_a-z][0-9A-Z_a-z]*(?:::[0-9A-Z_a-z]+)*/;
 
 =head1 FUNCTIONS
 
+=head2 Basic module handling
+
 =over
 
-=item is_valid_module_name(ARG)
+=item is_module_name(ARG)
 
 Returns a truth value indicating whether I<ARG> is a plain string
 satisfying Perl module name syntax as described for L</$module_name_rx>.
 
 =cut
 
-sub is_valid_module_name($) { &is_string && $_[0] =~ /\A$module_name_rx\z/o }
+sub is_module_name($) { &is_string && $_[0] =~ /\A$module_name_rx\z/o }
+
+=item is_valid_module_name(ARG)
+
+Deprecated alias for L</is_module_name>.
+
+=cut
+
+*is_valid_module_name = \&is_module_name;
 
 =item require_module(NAME)
 
@@ -110,7 +119,7 @@ was already loaded.
 
 sub require_module($) {
 	my($name) = @_;
-	croak "bad module name `$name'" unless is_valid_module_name($name);
+	croak "bad module name `$name'" unless is_module_name($name);
 	# This translation to Unix-style filename is correct regardless
 	# of platform.  This is what ck_require() in the Perl core does
 	# with a bareword, and pp_require() translates the Unix-style
@@ -119,6 +128,12 @@ sub require_module($) {
 	$name .= ".pm";
 	return require($name);
 }
+
+=back
+
+=head2 Structured module use
+
+=over
 
 =item use_module(NAME[, VERSION])
 
@@ -190,7 +205,7 @@ sub _has_version_var($) {
 
 sub use_package_optimistically($;$) {
 	my($name, $version) = @_;
-	croak "bad module name `$name'" unless is_valid_module_name($name);
+	croak "bad module name `$name'" unless is_module_name($name);
 	unless(_has_version_var($name)) {
 		eval "local \$SIG{__DIE__}; require $name";
 		die $@ if $@ ne "" && $@ !~ /\ACan't locate .* at \(eval /;
@@ -203,7 +218,13 @@ sub use_package_optimistically($;$) {
 	return $name;
 }
 
-=item is_valid_module_spec(PREFIX, SPEC)
+=back
+
+=head2 Module name composition
+
+=over
+
+=item is_module_spec(PREFIX, SPEC)
 
 Tests whether I<SPEC> is valid input for C<compose_module_name()>.
 See below for what that entails.  Whether a I<PREFIX> is supplied affects
@@ -212,7 +233,7 @@ so this function treats I<PREFIX> as a truth value.
 
 =cut
 
-sub is_valid_module_spec($$) {
+sub is_module_spec($$) {
 	my($prefix, $spec) = @_;
 	return is_string($spec) &&
 		(($prefix && $spec =~ m{\A
@@ -222,6 +243,14 @@ sub is_valid_module_spec($$) {
 			    [a-zA-Z_][0-9a-zA-Z_]*
 			    (?:(?:/|::)[0-9a-zA-Z_]+)*\z}x));
 }
+
+=item is_valid_module_spec(PREFIX, SPEC)
+
+Deprecated alias for L</is_module_spec>.
+
+=cut
+
+*is_valid_module_spec = \&is_module_spec;
 
 =item compose_module_name(PREFIX, SPEC)
 
@@ -247,7 +276,7 @@ separator (either C</> or C<::>).
 sub compose_module_name($$) {
 	my($prefix, $spec) = @_;
 	croak "bad module prefix `$prefix'"
-		if defined($prefix) && !is_valid_module_name($prefix);
+		if defined($prefix) && !is_module_name($prefix);
 	if(defined($prefix) && $spec =~ m{\A[0-9a-zA-Z_]+
 					  (?:(?:/|::)[0-9a-zA-Z_]+)*\z}x) {
 		$spec = $prefix."::".$spec;

@@ -6,6 +6,8 @@
     as a function (with appropriate name translation) instead of using
     string eval, to avoid unnecessary complication of exception handling
 
+  * provide the "is_valid_" functions under shorter "is_" names
+
   * revise POD markup
 
   * check for required Perl version at runtime

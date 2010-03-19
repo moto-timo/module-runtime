@@ -1,6 +1,10 @@
-use Test::More tests => 29;
+use Test::More tests => 30;
 
-BEGIN { use_ok "Module::Runtime", qw($module_name_rx is_valid_module_name); }
+BEGIN { use_ok "Module::Runtime", qw(
+	$module_name_rx is_module_name is_valid_module_name
+); }
+
+ok \&is_valid_module_name == \&is_module_name;
 
 foreach my $name (
 	undef,
@@ -10,7 +14,7 @@ foreach my $name (
 	{},
 	sub{},
 ) {
-	ok(!is_valid_module_name($name), "non-string is bad (function)");
+	ok(!is_module_name($name), "non-string is bad (function)");
 }
 
 foreach my $name (qw(
@@ -20,7 +24,7 @@ foreach my $name (qw(
 	foo::123::x_0
 	_
 )) {
-	ok(is_valid_module_name($name), "`$name' is good (function)");
+	ok(is_module_name($name), "`$name' is good (function)");
 	ok($name =~ /\A$module_name_rx\z/, "`$name' is good (regexp)");
 }
 
@@ -32,6 +36,6 @@ foreach my $name (qw(
 	::foo
 	foo::::bar
 )) {
-	ok(!is_valid_module_name($name), "`$name' is bad (function)");
+	ok(!is_module_name($name), "`$name' is bad (function)");
 	ok($name !~ /\A$module_name_rx\z/, "`$name' is bad (regexp)");
 }
