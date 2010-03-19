@@ -52,9 +52,9 @@ This tests whether a string is a valid Perl module name, i.e., has valid
 bareword syntax.  The rule for this, precisely, is: the string must
 consist of one or more segments separated by C<::>; each segment must
 consist of one or more identifier characters (alphanumerics plus "_");
-the first character of the string must not be a digit.  Thus C<IO::File>,
-C<warnings>, and C<foo::123::x_0> are all valid module names, whereas
-C<IO::> and C<1foo::bar> are not.
+the first character of the string must not be a digit.  Thus "C<IO::File>",
+"C<warnings>", and "C<foo::123::x_0>" are all valid module names, whereas
+"C<IO::>" and "C<1foo::bar>" are not.
 Only ASCII characters are permitted; Perl's handling of non-ASCII
 characters in source code is inconsistent.
 
@@ -70,17 +70,17 @@ sub is_valid_module_name($) {
 =item require_module(NAME)
 
 This is essentially the bareword form of C<require>, in runtime form.
-The NAME is a string, which should be a valid module name (one or
+The I<NAME> is a string, which should be a valid module name (one or
 more C<::>-separated segments).  If it is not a valid name, the function
 C<die>s.
 
-The module specified by NAME is loaded, if it hasn't been already,
+The module specified by I<NAME> is loaded, if it hasn't been already,
 in the manner of the bareword form of C<require>.  That means that a
 search through C<@INC> is performed, and a byte-compiled form of the
 module will be used if available.
 
 The return value is as for C<require>.  That is, it is the value returned
-by the module itself if the module is loaded anew, or 1 if the module
+by the module itself if the module is loaded anew, or C<1> if the module
 was already loaded.
 
 =cut
@@ -99,18 +99,18 @@ sub require_module($) {
 
 =item use_module(NAME[, VERSION])
 
-This is essentially C<use> in runtime form, but without the "import"
-feature (which is fundamentally a compile-time thing).  The NAME is
+This is essentially C<use> in runtime form, but without the importing
+feature (which is fundamentally a compile-time thing).  The I<NAME> is
 handled just like in C<require_module> above: it must be a module name,
 and the named module is loaded as if by the bareword form of C<require>.
 
-If a VERSION is specified, the "VERSION" method of the loaded module is
-called with the specified VERSION as an argument.  This normally serves to
+If a I<VERSION> is specified, the C<VERSION> method of the loaded module is
+called with the specified I<VERSION> as an argument.  This normally serves to
 ensure that the version loaded is at least the version required.  This is
-the same functionality provided by the VERSION parameter of C<use>.
+the same functionality provided by the I<VERSION> parameter of C<use>.
 
 On success, the name of the module is returned.  This is unlike
-C<require_module>, and is done so that the entire call to C<use_module>
+L</require_module>, and is done so that the entire call to L</use_module>
 can be used as a class name to call a constructor, as in the example in
 the synopsis.
 
@@ -127,7 +127,7 @@ sub use_module($;$) {
 
 =item use_package_optimistically(NAME[, VERSION])
 
-This is an analogue of C<use_module> for the situation where there is
+This is an analogue of L</use_module> for the situation where there is
 uncertainty as to whether a package/class is defined in its own module
 or by some other means.  It attempts to arrange for the named package to
 be available, either by loading a module or by doing nothing and hoping.
@@ -144,17 +144,17 @@ or if it was loaded but didn't create a C<$VERSION> variable, then such a
 variable is automatically created (with value C<undef>) so that repeated
 use of this function won't redundantly attempt to load the module.
 
-This is mostly the same operation that is performed by the C<base>
+This is mostly the same operation that is performed by the L<base>
 pragma to ensure that the specified base classes are available.
-The difference is that C<base> does not allow the C<$VERSION> variable
-to remain undefined: it will set it to "-1, set by base.pm" if it does
+The difference is that L<base> does not allow the C<$VERSION> variable
+to remain undefined: it will set it to "C<-1, set by base.pm>" if it does
 not otherwise have a non-null value.
 
-If a VERSION is specified, the "VERSION" method of the loaded package is
-called with the specified VERSION as an argument.  This normally serves
+If a I<VERSION> is specified, the C<VERSION> method of the loaded package is
+called with the specified I<VERSION> as an argument.  This normally serves
 to ensure that the version loaded is at least the version required.
 On success, the name of the package is returned.  These aspects of the
-function work just like C<use_module>.
+function work just like L</use_module>.
 
 =cut
 
@@ -182,10 +182,10 @@ sub use_package_optimistically($;$) {
 
 =item is_valid_module_spec(PREFIX, SPEC)
 
-Tests whether SPEC is valid input for C<compose_module_name()>.
-See below for what that entails.  Whether a PREFIX is supplied affects
-the validity of SPEC, but the exact value of the prefix is unimportant,
-so this function treats PREFIX as a truth value.
+Tests whether I<SPEC> is valid input for C<compose_module_name()>.
+See below for what that entails.  Whether a I<PREFIX> is supplied affects
+the validity of I<SPEC>, but the exact value of the prefix is unimportant,
+so this function treats I<PREFIX> as a truth value.
 
 =cut
 
@@ -204,18 +204,18 @@ sub is_valid_module_spec($$) {
 This function is intended to make it more convenient for a user to specify
 a Perl module name at runtime.  Users have greater need for abbreviations
 and context-sensitivity than programmers, and Perl module names get a
-little unwieldy.  SPEC is what the user specifies, and this function
+little unwieldy.  I<SPEC> is what the user specifies, and this function
 translates it into a module name in standard form, which it returns.
 
-SPEC has syntax approximately that of a standard module name: it
+I<SPEC> has syntax approximately that of a standard module name: it
 should consist of one or more name segments, each of which consists
 of one or more identifier characters.  However, C</> is permitted as a
 separator, in addition to the standard C<::>.  The two separators are
 entirely interchangeable.
 
-Additionally, if PREFIX is not C<undef> then it must be a module
+Additionally, if I<PREFIX> is not C<undef> then it must be a module
 name in standard form, and it is prefixed to the user-specified name.
-The user can inhibit the prefix addition by starting SPEC with a
+The user can inhibit the prefix addition by starting I<SPEC> with a
 separator (either C</> or C<::>).
 
 =cut

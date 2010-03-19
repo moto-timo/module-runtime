@@ -2,6 +2,8 @@
     as a function (with appropriate name translation) instead of using
     string eval, to avoid unnecessary complication of exception handling
 
+  * revise POD markup
+
   * check for required Perl version at runtime
 
   * in Build.PL, explicitly declare configure-time requirements
