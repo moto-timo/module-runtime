@@ -17,9 +17,12 @@ Module::Runtime - runtime module handling
 	$widget = use_package_optimistically("Local::Widget")->new;
 
 	use Module::Runtime qw(
+		$top_module_spec_rx $sub_module_spec_rx
 		is_module_spec compose_module_name
 	);
 
+	if($spec =~ /\A$top_module_spec_rx\z/o) { ...
+	if($spec =~ /\A$sub_module_spec_rx\z/o) { ...
 	if(is_module_spec("Standard::Prefix", $spec)) { ...
 	$module_name =
 		compose_module_name("Standard::Prefix", $spec);
@@ -46,6 +49,7 @@ use parent "Exporter";
 our @EXPORT_OK = qw(
 	$module_name_rx is_module_name is_valid_module_name require_module
 	use_module use_package_optimistically
+	$top_module_spec_rx $sub_module_spec_rx
 	is_module_spec is_valid_module_spec compose_module_name
 );
 
@@ -73,6 +77,32 @@ C<'> separators are not permitted.
 =cut
 
 our $module_name_rx = qr/[A-Z_a-z][0-9A-Z_a-z]*(?:::[0-9A-Z_a-z]+)*/;
+
+=item $top_module_spec_rx
+
+Matches a module specification for use with L</compose_module_name>,
+where no prefix is being used.
+
+=cut
+
+my $qual_module_spec_rx =
+	qr#(?:/|::)[A-Z_a-z][0-9A-Z_a-z]*(?:(?:/|::)[0-9A-Z_a-z]+)*#;
+
+my $unqual_top_module_spec_rx =
+	qr#[A-Z_a-z][0-9A-Z_a-z]*(?:(?:/|::)[0-9A-Z_a-z]+)*#;
+
+our $top_module_spec_rx = qr/$qual_module_spec_rx|$unqual_top_module_spec_rx/o;
+
+=item $sub_module_spec_rx
+
+Matches a module specification for use with L</compose_module_name>,
+where a prefix is being used.
+
+=cut
+
+my $unqual_sub_module_spec_rx = qr#[0-9A-Z_a-z]+(?:(?:/|::)[0-9A-Z_a-z]+)*#;
+
+our $sub_module_spec_rx = qr/$qual_module_spec_rx|$unqual_sub_module_spec_rx/o;
 
 =back
 
@@ -226,7 +256,7 @@ sub use_package_optimistically($;$) {
 
 =item is_module_spec(PREFIX, SPEC)
 
-Tests whether I<SPEC> is valid input for C<compose_module_name()>.
+Tests whether I<SPEC> is valid input for L</compose_module_name>.
 See below for what that entails.  Whether a I<PREFIX> is supplied affects
 the validity of I<SPEC>, but the exact value of the prefix is unimportant,
 so this function treats I<PREFIX> as a truth value.
@@ -236,12 +266,8 @@ so this function treats I<PREFIX> as a truth value.
 sub is_module_spec($$) {
 	my($prefix, $spec) = @_;
 	return is_string($spec) &&
-		(($prefix && $spec =~ m{\A
-				      [0-9][0-9a-zA-Z_]*
-				      (?:(?:/|::)[0-9a-zA-Z_]+)*\z}x) ||
-		 ($spec =~ m{\A(?:/|::)?
-			    [a-zA-Z_][0-9a-zA-Z_]*
-			    (?:(?:/|::)[0-9a-zA-Z_]+)*\z}x));
+		$spec =~ ($prefix ? qr/\A$sub_module_spec_rx\z/o :
+				    qr/\A$top_module_spec_rx\z/o);
 }
 
 =item is_valid_module_spec(PREFIX, SPEC)
@@ -277,18 +303,14 @@ sub compose_module_name($$) {
 	my($prefix, $spec) = @_;
 	croak "bad module prefix `$prefix'"
 		if defined($prefix) && !is_module_name($prefix);
-	if(defined($prefix) && $spec =~ m{\A[0-9a-zA-Z_]+
-					  (?:(?:/|::)[0-9a-zA-Z_]+)*\z}x) {
-		$spec = $prefix."::".$spec;
-	} elsif($spec =~ m{\A(?:/|::)?
-			   ([a-zA-Z_][0-9a-zA-Z_]*
-			    (?:(?:/|::)[0-9a-zA-Z_]+)*)\z}x) {
-		$spec = $1;
+	croak "bad module specification `$spec'" unless &is_module_spec;
+	if($spec =~ s#\A(?:/|::)##) {
+		# OK
 	} else {
-		croak "bad module specification `$spec'";
+		$spec = $prefix."::".$spec if defined $prefix;
 	}
 	$spec =~ s#/#::#g;
-	$spec;
+	return $spec;
 }
 
 =back

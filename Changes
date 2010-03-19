@@ -1,4 +1,4 @@
-  * supply regexp to check module name syntax
+  * supply regexp to check module name and spec syntax
 
   * in "is_" functions, also cleanly handle non-string arguments
 
