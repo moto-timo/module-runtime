@@ -12,8 +12,6 @@ Module::Build->new(
 		"perl" => "5.006",
 	},
 	build_requires => {
-		"Math::Complex" => 0,
-		"Math::Trig" => 0,
 		"Module::Build" => 0,
 		"Test::More" => 0,
 		"perl" => "5.006",

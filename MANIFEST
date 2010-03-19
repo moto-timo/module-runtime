@@ -6,6 +6,8 @@ META.yml
 Makefile.PL
 README
 lib/Module/Runtime.pm
+t/Mod0.pm
+t/Mod1.pm
 t/cmn.t
 t/ivmn.t
 t/ivms.t

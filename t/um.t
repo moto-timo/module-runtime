@@ -11,7 +11,7 @@ sub test_use_module($;$) {
 }
 
 # a module that doesn't exist
-test_use_module("module::that::does::not::exist");
+test_use_module("t::NotExist");
 like($err, qr/^Can't locate /);
 
 # a module that's already loaded
@@ -20,9 +20,9 @@ is($err, "");
 is($result, "Test::More");
 
 # a module that we'll load now
-test_use_module("Math::Complex");
+test_use_module("t::Mod0");
 is($err, "");
-is($result, "Math::Complex");
+is($result, "t::Mod0");
 
 # successful version check
 test_use_module("Module::Runtime", 0.001);

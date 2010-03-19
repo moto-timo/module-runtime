@@ -11,7 +11,7 @@ sub test_require_module($) {
 }
 
 # a module that doesn't exist
-test_require_module("module::that::does::not::exist");
+test_require_module("t::NotExist");
 like($err, qr/^Can't locate /);
 
 # a module that's already loaded
@@ -20,11 +20,11 @@ is($err, "");
 is($result, 1);
 
 # a module that we'll load now
-test_require_module("Math::Complex");
+test_require_module("t::Mod0");
 is($err, "");
-ok($result);
+is($result, "t::Mod0 return");
 
 # re-requiring the module that we just loaded
-test_require_module("Math::Complex");
+test_require_module("t::Mod0");
 is($err, "");
 is($result, 1);

@@ -11,9 +11,9 @@ sub test_use_package_optimistically($;$) {
 }
 
 # a module that doesn't exist
-test_use_package_optimistically("module::that::does::not::exist");
+test_use_package_optimistically("t::NotExist");
 is $err, "";
-is $result, "module::that::does::not::exist";
+is $result, "t::NotExist";
 
 # a module that's already loaded
 test_use_package_optimistically("Test::More");
@@ -21,10 +21,10 @@ is $err, "";
 is $result, "Test::More";
 
 # a module that we'll load now
-test_use_package_optimistically("Math::Complex");
+test_use_package_optimistically("t::Mod0");
 is $err, "";
-is $result, "Math::Complex";
-ok defined(${"Math::Complex::VERSION"});
+is $result, "t::Mod0";
+ok defined(${"t::Mod0::VERSION"});
 
 # successful version check
 test_use_package_optimistically("Module::Runtime", 0.001);
@@ -36,10 +36,10 @@ test_use_package_optimistically("Module::Runtime", 999);
 like $err, qr/^Module::Runtime version /;
 
 # don't load module if $VERSION already set, although "require" will
-$Math::Trig::VERSION = undef;
-test_use_package_optimistically("Math::Trig");
+$t::Mod1::VERSION = undef;
+test_use_package_optimistically("t::Mod1");
 is $err, "";
-is $result, "Math::Trig";
-ok !defined($Math::Trig::VERSION);
-require Math::Trig;
-ok defined($Math::Trig::VERSION);
+is $result, "t::Mod1";
+ok !defined($t::Mod1::VERSION);
+require t::Mod1;
+ok defined($t::Mod1::VERSION);
