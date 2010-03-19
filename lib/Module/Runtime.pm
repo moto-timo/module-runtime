@@ -88,7 +88,13 @@ was already loaded.
 sub require_module($) {
 	my($name) = @_;
 	croak "bad module name `$name'" unless is_valid_module_name($name);
-	eval("local \$SIG{__DIE__}; require $name") || die $@;
+	# This translation to Unix-style filename is correct regardless
+	# of platform.  This is what ck_require() in the Perl core does
+	# with a bareword, and pp_require() translates the Unix-style
+	# filename to whatever is appropriate for the real platform.
+	$name =~ s!::!/!g;
+	$name .= ".pm";
+	return require($name);
 }
 
 =item use_module(NAME[, VERSION])
