@@ -1,1 +1,1 @@
-* check_* functions to match the is_* functions
+* avoid extraneous dependencies for testing

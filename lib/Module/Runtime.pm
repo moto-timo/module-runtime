@@ -4,11 +4,15 @@ Module::Runtime - runtime module handling
 
 =head1 SYNOPSIS
 
-	use Module::Runtime
-		qw($module_name_rx is_module_name require_module);
+	use Module::Runtime qw(
+		$module_name_rx is_module_name check_module_name
+		require_module
+	);
 
 	if($module_name =~ /\A$module_name_rx\z/o) { ...
 	if(is_module_name($module_name)) { ...
+	check_module_name($module_name);
+
 	require_module($module_name);
 
 	use Module::Runtime qw(use_module use_package_optimistically);
@@ -18,12 +22,15 @@ Module::Runtime - runtime module handling
 
 	use Module::Runtime qw(
 		$top_module_spec_rx $sub_module_spec_rx
-		is_module_spec compose_module_name
+		is_module_spec check_module_spec
+		compose_module_name
 	);
 
 	if($spec =~ /\A$top_module_spec_rx\z/o) { ...
 	if($spec =~ /\A$sub_module_spec_rx\z/o) { ...
 	if(is_module_spec("Standard::Prefix", $spec)) { ...
+	check_module_spec("Standard::Prefix", $spec);
+
 	$module_name =
 		compose_module_name("Standard::Prefix", $spec);
 
@@ -40,17 +47,18 @@ package Module::Runtime;
 use warnings;
 use strict;
 
-use Carp qw(croak);
 use Params::Classify qw(is_string);
 
 our $VERSION = "0.006";
 
 use parent "Exporter";
 our @EXPORT_OK = qw(
-	$module_name_rx is_module_name is_valid_module_name require_module
+	$module_name_rx is_module_name is_valid_module_name check_module_name
+	require_module
 	use_module use_package_optimistically
 	$top_module_spec_rx $sub_module_spec_rx
-	is_module_spec is_valid_module_spec compose_module_name
+	is_module_spec is_valid_module_spec check_module_spec
+	compose_module_name
 );
 
 =head1 REGULAR EXPRESSIONS
@@ -129,6 +137,21 @@ Deprecated alias for L</is_module_name>.
 
 *is_valid_module_name = \&is_module_name;
 
+=item check_module_name(ARG)
+
+Check whether I<ARG> is a plain string
+satisfying Perl module name syntax as described for L</$module_name_rx>.
+Return normally if it is, or C<die> if it is not.
+
+=cut
+
+sub check_module_name($) {
+	unless(&is_module_name) {
+		die +(&is_string ? "`$_[0]'" : "argument").
+			" is not a module name\n";
+	}
+}
+
 =item require_module(NAME)
 
 This is essentially the bareword form of C<require>, in runtime form.
@@ -148,8 +171,8 @@ was already loaded.
 =cut
 
 sub require_module($) {
+	&check_module_name;
 	my($name) = @_;
-	croak "bad module name `$name'" unless is_module_name($name);
 	# This translation to Unix-style filename is correct regardless
 	# of platform.  This is what ck_require() in the Perl core does
 	# with a bareword, and pp_require() translates the Unix-style
@@ -235,7 +258,7 @@ sub _has_version_var($) {
 
 sub use_package_optimistically($;$) {
 	my($name, $version) = @_;
-	croak "bad module name `$name'" unless is_module_name($name);
+	check_module_name($name);
 	unless(_has_version_var($name)) {
 		eval "local \$SIG{__DIE__}; require $name";
 		die $@ if $@ ne "" && $@ !~ /\ACan't locate .* at \(eval /;
@@ -256,7 +279,8 @@ sub use_package_optimistically($;$) {
 
 =item is_module_spec(PREFIX, SPEC)
 
-Tests whether I<SPEC> is valid input for L</compose_module_name>.
+Returns a truth value indicating
+whether I<SPEC> is valid input for L</compose_module_name>.
 See below for what that entails.  Whether a I<PREFIX> is supplied affects
 the validity of I<SPEC>, but the exact value of the prefix is unimportant,
 so this function treats I<PREFIX> as a truth value.
@@ -277,6 +301,20 @@ Deprecated alias for L</is_module_spec>.
 =cut
 
 *is_valid_module_spec = \&is_module_spec;
+
+=item check_module_spec(PREFIX, SPEC)
+
+Check whether I<SPEC> is valid input for L</compose_module_name>.
+Return normally if it is, or C<die> if it is not.
+
+=cut
+
+sub check_module_spec($$) {
+	unless(&is_module_spec) {
+		die +(is_string($_[1]) ? "`$_[1]'" : "argument").
+			" is not a module specification\n";
+	}
+}
 
 =item compose_module_name(PREFIX, SPEC)
 
@@ -301,9 +339,8 @@ separator (either C</> or C<::>).
 
 sub compose_module_name($$) {
 	my($prefix, $spec) = @_;
-	croak "bad module prefix `$prefix'"
-		if defined($prefix) && !is_module_name($prefix);
-	croak "bad module specification `$spec'" unless &is_module_spec;
+	check_module_name($prefix) if defined $prefix;
+	&check_module_spec;
 	if($spec =~ s#\A(?:/|::)##) {
 		# OK
 	} else {

@@ -21,7 +21,6 @@ Module::Build->new(
 		"warnings" => 0,
 	},
 	requires => {
-		"Carp" => 0,
 		"Exporter" => 0,
 		"Params::Classify" => 0,
 		"parent" => 0,
