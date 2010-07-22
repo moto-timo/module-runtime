@@ -1,3 +1,6 @@
+use warnings;
+use strict;
+
 use Test::More tests => 9;
 
 BEGIN { use_ok "Module::Runtime", qw(use_module); }
@@ -32,3 +35,5 @@ is($result, "Module::Runtime");
 # failing version check
 test_use_module("Module::Runtime", 999);
 like($err, qr/^Module::Runtime version /);
+
+1;

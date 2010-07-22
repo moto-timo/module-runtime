@@ -1,3 +1,6 @@
+use warnings;
+use strict;
+
 use Test::More tests => 47;
 
 BEGIN { use_ok "Module::Runtime", qw(
@@ -42,3 +45,5 @@ foreach my $name (qw(
 	eval { check_module_name($name) }; isnt $@, "";
 	ok($name !~ /\A$module_name_rx\z/, "`$name' is bad (regexp)");
 }
+
+1;

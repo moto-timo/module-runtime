@@ -1,3 +1,6 @@
+use warnings;
+use strict;
+
 use Test::More tests => 140;
 
 BEGIN { use_ok "Module::Runtime", qw(
@@ -75,3 +78,5 @@ foreach my $spec (qw(
 	ok($spec =~ qr/\A$sub_module_spec_rx\z/,
 		"`$spec' needs a prefix (regexp)");
 }
+
+1;

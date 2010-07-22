@@ -1,3 +1,6 @@
+use warnings;
+use strict;
+
 use Test::More tests => 15;
 
 BEGIN { use_ok "Module::Runtime", qw(use_package_optimistically); }
@@ -24,6 +27,7 @@ is $result, "Test::More";
 test_use_package_optimistically("t::Mod0");
 is $err, "";
 is $result, "t::Mod0";
+no strict "refs";
 ok defined(${"t::Mod0::VERSION"});
 
 # successful version check
@@ -43,3 +47,5 @@ is $result, "t::Mod1";
 ok !defined($t::Mod1::VERSION);
 require t::Mod1;
 ok defined($t::Mod1::VERSION);
+
+1;
