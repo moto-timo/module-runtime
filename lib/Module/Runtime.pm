@@ -47,7 +47,7 @@ package Module::Runtime;
 use warnings;
 use strict;
 
-use Params::Classify qw(is_string);
+use Params::Classify 0.000 qw(is_string);
 
 our $VERSION = "0.007";
 
@@ -127,7 +127,7 @@ satisfying Perl module name syntax as described for L</$module_name_rx>.
 
 =cut
 
-sub is_module_name($) { &is_string && $_[0] =~ /\A$module_name_rx\z/o }
+sub is_module_name($) { is_string($_[0]) && $_[0] =~ /\A$module_name_rx\z/o }
 
 =item is_valid_module_name(ARG)
 
@@ -147,7 +147,7 @@ Return normally if it is, or C<die> if it is not.
 
 sub check_module_name($) {
 	unless(&is_module_name) {
-		die +(&is_string ? "`$_[0]'" : "argument").
+		die +(is_string($_[0]) ? "`$_[0]'" : "argument").
 			" is not a module name\n";
 	}
 }
