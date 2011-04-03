@@ -7,7 +7,9 @@
 
   * explicitly state version required of Params::Classify
 
-  * add MYMETA.yml to .cvsignore
+  * include META.json in distribution
+
+  * add MYMETA.json and MYMETA.yml to .cvsignore
 
 version 0.007; 2010-03-19
 
