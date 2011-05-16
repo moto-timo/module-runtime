@@ -49,7 +49,7 @@ use strict;
 
 use Params::Classify 0.000 qw(is_string);
 
-our $VERSION = "0.007";
+our $VERSION = "0.008";
 
 use parent "Exporter";
 our @EXPORT_OK = qw(
@@ -364,7 +364,7 @@ Andrew Main (Zefram) <zefram@fysh.org>
 
 =head1 COPYRIGHT
 
-Copyright (C) 2004, 2006, 2007, 2009, 2010
+Copyright (C) 2004, 2006, 2007, 2009, 2010, 2011
 Andrew Main (Zefram) <zefram@fysh.org>
 
 =head1 LICENSE
