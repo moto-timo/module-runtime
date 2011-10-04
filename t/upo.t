@@ -39,13 +39,12 @@ is $result, "Module::Runtime";
 test_use_package_optimistically("Module::Runtime", 999);
 like $err, qr/^Module::Runtime version /;
 
-# don't load module if $VERSION already set, although "require" will
+# even load module if $VERSION already set, unlike older behaviour
 $t::Mod1::VERSION = undef;
 test_use_package_optimistically("t::Mod1");
 is $err, "";
 is $result, "t::Mod1";
-ok !defined($t::Mod1::VERSION);
-require t::Mod1;
 ok defined($t::Mod1::VERSION);
+ok $INC{"t/Mod1.pm"};
 
 1;

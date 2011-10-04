@@ -239,23 +239,15 @@ uncertainty as to whether a package/class is defined in its own module
 or by some other means.  It attempts to arrange for the named package to
 be available, either by loading a module or by doing nothing and hoping.
 
-If the package does not appear to already be loaded then an attempt is
-made to load the module of the same name (as if by the bareword form
+An attempt is made to load the named module (as if by the bareword form
 of C<require>).  If the module cannot be found then it is assumed that
 the package was actually already loaded but wasn't detected correctly,
 and no error is signalled.  That's the optimistic bit.
 
-For the purposes of this function, package existence is checked by whether
-a C<$VERSION> variable exists in the package.  If the module wasn't found,
-or if it was loaded but didn't create a C<$VERSION> variable, then such a
-variable is automatically created (with value C<undef>) so that repeated
-use of this function won't redundantly attempt to load the module.
-
-This is mostly the same operation that is performed by the L<base>
-pragma to ensure that the specified base classes are available.
-The difference is that L<base> does not allow the C<$VERSION> variable
-to remain undefined: it will set it to "C<-1, set by base.pm>" if it does
-not otherwise have a non-null value.
+This is mostly the same operation that is performed by the L<base> pragma
+to ensure that the specified base classes are available.  The behaviour
+of L<base> was simplified in version 2.18, and this function changed
+to match.
 
 If a I<VERSION> is specified, the C<VERSION> method of the loaded package is
 called with the specified I<VERSION> as an argument.  This normally serves
@@ -265,24 +257,14 @@ function work just like L</use_module>.
 
 =cut
 
-sub _has_version_var($) {
-	my($name) = @_;
-	no strict "refs";
-	my $vg = ${"${name}::"}{VERSION};
-	return $vg && *{$vg}{SCALAR};
-}
-
 sub use_package_optimistically($;$) {
 	my($name, $version) = @_;
 	check_module_name($name);
-	unless(_has_version_var($name)) {
-		eval "local \$SIG{__DIE__}; require $name";
-		die $@ if $@ ne "" && $@ !~ /\ACan't locate .* at \(eval /;
-		unless(_has_version_var($name)) {
-			no strict "refs";
-			${"${name}::VERSION"} = undef;
-		}
-	}
+	eval { local $SIG{__DIE__}; require(module_notional_filename($name)); };
+	die $@ if $@ ne "" && $@ !~ /\A
+		Can't\ locate\ .+\ at
+		\ @{[__FILE__]}\ line\ @{[__LINE__-1]}
+	/xs;
 	$name->VERSION($version) if defined $version;
 	return $name;
 }

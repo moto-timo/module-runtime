@@ -1,5 +1,8 @@
   * new function module_notional_filename()
 
+  * simplify behaviour of use_package_optimistically() to match simplified
+    base.pm 2.18
+
 version 0.008; 2011-05-16
 
   * change usage of Params::Classify functions to take advantage of
