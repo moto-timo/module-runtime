@@ -6,13 +6,14 @@ Module::Runtime - runtime module handling
 
 	use Module::Runtime qw(
 		$module_name_rx is_module_name check_module_name
-		require_module
+		module_notional_filename require_module
 	);
 
 	if($module_name =~ /\A$module_name_rx\z/o) { ...
 	if(is_module_name($module_name)) { ...
 	check_module_name($module_name);
 
+	$notional_filename = module_notional_filename($module_name);
 	require_module($module_name);
 
 	use Module::Runtime qw(use_module use_package_optimistically);
@@ -54,7 +55,7 @@ our $VERSION = "0.008";
 use parent "Exporter";
 our @EXPORT_OK = qw(
 	$module_name_rx is_module_name is_valid_module_name check_module_name
-	require_module
+	module_notional_filename require_module
 	use_module use_package_optimistically
 	$top_module_spec_rx $sub_module_spec_rx
 	is_module_spec is_valid_module_spec check_module_spec
@@ -152,6 +153,29 @@ sub check_module_name($) {
 	}
 }
 
+=item module_notional_filename(NAME)
+
+Generates a notional relative filename for a module, which is used in
+some Perl core interfaces.
+The I<NAME> is a string, which should be a valid module name (one or
+more C<::>-separated segments).  If it is not a valid name, the function
+C<die>s.
+
+The notional filename for the named module is generated and returned.
+This filename is always in Unix style, with C</> directory separators
+and a C<.pm> suffix.  This kind of filename can be used as an argument to
+C<require>, and is the key that appears in C<%INC> to identify a module,
+regardless of actual local filename syntax.
+
+=cut
+
+sub module_notional_filename($) {
+	&check_module_name;
+	my($name) = @_;
+	$name =~ s!::!/!g;
+	return $name.".pm";
+}
+
 =item require_module(NAME)
 
 This is essentially the bareword form of C<require>, in runtime form.
@@ -171,15 +195,7 @@ was already loaded.
 =cut
 
 sub require_module($) {
-	&check_module_name;
-	my($name) = @_;
-	# This translation to Unix-style filename is correct regardless
-	# of platform.  This is what ck_require() in the Perl core does
-	# with a bareword, and pp_require() translates the Unix-style
-	# filename to whatever is appropriate for the real platform.
-	$name =~ s!::!/!g;
-	$name .= ".pm";
-	return require($name);
+	return require(&module_notional_filename);
 }
 
 =back
