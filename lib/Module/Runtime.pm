@@ -50,7 +50,7 @@ use strict;
 
 use Params::Classify 0.000 qw(is_string);
 
-our $VERSION = "0.010";
+our $VERSION = "0.011";
 
 use parent "Exporter";
 our @EXPORT_OK = qw(
