@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 8;
+use Test::More tests => 9;
 
 BEGIN { use_ok "Module::Runtime", qw(require_module); }
 
@@ -31,5 +31,9 @@ is($result, "t::Mod0 return");
 test_require_module("t::Mod0");
 is($err, "");
 is($result, 1);
+
+# module file scope sees scalar context regardless of calling context
+eval { require_module("t::Mod1"); 1 };
+is $@, "";
 
 1;

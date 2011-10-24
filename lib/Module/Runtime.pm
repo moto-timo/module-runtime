@@ -195,7 +195,14 @@ was already loaded.
 =cut
 
 sub require_module($) {
-	return require(&module_notional_filename);
+	# Explicit scalar() here works around a Perl core bug, present
+	# in Perl 5.8 and 5.10, which allowed a require() in return
+	# position to pass a non-scalar context through to file scope
+	# of the required file.  This breaks some modules.  require()
+	# in any other position, where its op flags determine context
+	# statically, doesn't have this problem, because the op flags
+	# are forced to scalar.
+	return scalar(require(&module_notional_filename));
 }
 
 =back

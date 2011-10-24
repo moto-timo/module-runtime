@@ -1,3 +1,9 @@
+  * bugfix: in require_module() and use_module(), work around a Perl
+    core bug affecting Perl 5.8 and 5.10 that could pass the wrong
+    context to the file scope of a required file, which breaks some
+    modules; this bug would only rarely afflict the core's require()
+    in situations where it would afflict require_module()
+
 version 0.010; 2011-10-07
 
   * bugfix: in use_package_optimistically(), fix regexp interpolation

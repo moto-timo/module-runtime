@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 9;
+use Test::More tests => 12;
 
 BEGIN { use_ok "Module::Runtime", qw(use_module); }
 
@@ -27,6 +27,15 @@ test_use_module("t::Mod0");
 is($err, "");
 is($result, "t::Mod0");
 
+# re-requiring the module that we just loaded
+test_use_module("t::Mod0");
+is($err, "");
+is($result, "t::Mod0");
+
+# module file scope sees scalar context regardless of calling context
+eval { use_module("t::Mod1"); 1 };
+is $@, "";
+
 # successful version check
 test_use_module("Module::Runtime", 0.001);
 is($err, "");
@@ -35,5 +44,7 @@ is($result, "Module::Runtime");
 # failing version check
 test_use_module("Module::Runtime", 999);
 like($err, qr/^Module::Runtime version /);
+
+1;
 
 1;
