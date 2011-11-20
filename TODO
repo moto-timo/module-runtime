@@ -1,1 +1,3 @@
+* change use_package_optimistically() to match new base.pm behaviour
+
 * distinguish the present-but-broken state by looking at %INC
