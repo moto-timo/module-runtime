@@ -1,3 +1,5 @@
+  * convert .cvsignore to .gitignore
+
 version 0.011; 2011-10-24
 
   * bugfix: in require_module() and use_module(), work around a Perl
