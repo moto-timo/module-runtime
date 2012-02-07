@@ -22,7 +22,6 @@ Module::Build->new(
 	},
 	requires => {
 		"Exporter" => 0,
-		"Params::Classify" => 0,
 		"parent" => 0,
 		"perl" => "5.006",
 		"strict" => 0,

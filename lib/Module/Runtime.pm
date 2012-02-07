@@ -48,8 +48,6 @@ package Module::Runtime;
 use warnings;
 use strict;
 
-use Params::Classify 0.000 qw(is_string);
-
 our $VERSION = "0.011";
 
 use parent "Exporter";
@@ -61,6 +59,13 @@ our @EXPORT_OK = qw(
 	is_module_spec is_valid_module_spec check_module_spec
 	compose_module_name
 );
+
+# Logic duplicated from Params::Classify.  Duplicating it here avoids
+# an extensive and potentially circular dependency graph.
+sub _is_string($) {
+	my($arg) = @_;
+	return defined($arg) && ref(\$arg) eq "SCALAR";
+}
 
 =head1 REGULAR EXPRESSIONS
 
@@ -128,7 +133,7 @@ satisfying Perl module name syntax as described for L</$module_name_rx>.
 
 =cut
 
-sub is_module_name($) { is_string($_[0]) && $_[0] =~ /\A$module_name_rx\z/o }
+sub is_module_name($) { _is_string($_[0]) && $_[0] =~ /\A$module_name_rx\z/o }
 
 =item is_valid_module_name(ARG)
 
@@ -148,7 +153,7 @@ Return normally if it is, or C<die> if it is not.
 
 sub check_module_name($) {
 	unless(&is_module_name) {
-		die +(is_string($_[0]) ? "`$_[0]'" : "argument").
+		die +(_is_string($_[0]) ? "`$_[0]'" : "argument").
 			" is not a module name\n";
 	}
 }
@@ -294,7 +299,7 @@ so this function treats I<PREFIX> as a truth value.
 
 sub is_module_spec($$) {
 	my($prefix, $spec) = @_;
-	return is_string($spec) &&
+	return _is_string($spec) &&
 		$spec =~ ($prefix ? qr/\A$sub_module_spec_rx\z/o :
 				    qr/\A$top_module_spec_rx\z/o);
 }
@@ -316,7 +321,7 @@ Return normally if it is, or C<die> if it is not.
 
 sub check_module_spec($$) {
 	unless(&is_module_spec) {
-		die +(is_string($_[1]) ? "`$_[1]'" : "argument").
+		die +(_is_string($_[1]) ? "`$_[1]'" : "argument").
 			" is not a module specification\n";
 	}
 }

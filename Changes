@@ -1,3 +1,7 @@
+  * duplicate is_string() from Params::Classify, rather than importing it,
+    to avoid circular dependency problems (affecting both installation
+    and runtime)
+
   * convert .cvsignore to .gitignore
 
 version 0.011; 2011-10-24
