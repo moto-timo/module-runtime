@@ -304,8 +304,8 @@ be available, either by loading a module or by doing nothing and hoping.
 
 An attempt is made to load the named module (as if by the bareword form
 of C<require>).  If the module cannot be found then it is assumed that
-the package was actually already loaded but wasn't detected correctly,
-and no error is signalled.  That's the optimistic bit.
+the package was actually already loaded by other means, and no error
+is signalled.  That's the optimistic bit.
 
 This is mostly the same operation that is performed by the L<base> pragma
 to ensure that the specified base classes are available.  The behaviour

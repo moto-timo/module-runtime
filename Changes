@@ -9,6 +9,8 @@
     the "warnings", "strict", and "parent" pragmata, to allow for possible
     future use of this module by any infrastructure module
 
+  * tweak documentation of use_package_optimistically()
+
   * test behaviour with tainted module name
 
   * test lack of unwanted eval frame around require
