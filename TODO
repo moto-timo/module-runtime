@@ -3,11 +3,4 @@
 * work around 5.8 %INC bug
 http://rabbit.us/diff/require_module_incbug.patch
 
-* document some promise about having few deps?
-
 * document ASCII-only name syntax more prominently, with notes about 5.16 changes
-
-* test taint behaviour
-http://paste.scsys.co.uk/181377
-
-* possibly avoid use of parent and other pragmatic modules

@@ -21,11 +21,7 @@ Module::Build->new(
 		"warnings" => 0,
 	},
 	requires => {
-		"Exporter" => 0,
-		"parent" => 0,
 		"perl" => "5.006",
-		"strict" => 0,
-		"warnings" => 0,
 	},
 	dynamic_config => 0,
 	meta_add => { distribution_type => "module" },

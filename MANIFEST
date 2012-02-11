@@ -12,6 +12,8 @@ t/Eval.pm
 t/Hints.pm
 t/Simple.pm
 t/cmn.t
+t/dependency.t
+t/import_error.t
 t/ivmn.t
 t/ivms.t
 t/mnf.t

@@ -5,6 +5,10 @@
     to avoid circular dependency problems (affecting both installation
     and runtime)
 
+  * duplicate minimal exporting behaviour from Exporter, and avoid using
+    the "warnings", "strict", and "parent" pragmata, to allow for possible
+    future use of this module by any infrastructure module
+
   * test behaviour with tainted module name
 
   * test lack of unwanted eval frame around require

@@ -37,8 +37,10 @@ Module::Runtime - runtime module handling
 
 =head1 DESCRIPTION
 
-The functions exported by this module deal with runtime handling of Perl
-modules, which are normally handled at compile time.
+The functions exported by this module deal with runtime handling of
+Perl modules, which are normally handled at compile time.  This module
+avoids using any other modules, so that it can be used in low-level
+infrastructure.
 
 The functions of this module whose purpose is to load modules include a
 workaround for Perl core bug [perl #68590] where it exists, except for
@@ -57,12 +59,15 @@ for this bug.
 package Module::Runtime;
 
 { use 5.006; }
-use warnings;
-use strict;
+# Don't "use warnings" here, to avoid dependencies.  Do standardise the
+# warning status by lexical override; unfortunately the only safe bitset
+# to build in is the empty set, equivalent to "no warnings".
+BEGIN { ${^WARNING_BITS} = ""; }
+# Don't "use strict" here, to avoid dependencies.
 
 our $VERSION = "0.011";
 
-use parent "Exporter";
+# Don't use Exporter here, to avoid dependencies.
 our @EXPORT_OK = qw(
 	$module_name_rx is_module_name is_valid_module_name check_module_name
 	module_notional_filename require_module
@@ -71,6 +76,29 @@ our @EXPORT_OK = qw(
 	is_module_spec is_valid_module_spec check_module_spec
 	compose_module_name
 );
+my %export_ok = map { ($_ => undef) } @EXPORT_OK;
+sub import {
+	my $me = shift;
+	my $callpkg = caller(0);
+	my $errs = "";
+	foreach(@_) {
+		if(exists $export_ok{$_}) {
+			# We would need to do "no strict 'refs'" here
+			# if we had enabled strict at file scope.
+			if(/\A\$(.*)\z/s) {
+				*{$callpkg."::".$1} = \$$1;
+			} else {
+				*{$callpkg."::".$_} = \&$_;
+			}
+		} else {
+			$errs .= "\"$_\" is not exported by the $me module\n";
+		}
+	}
+	if($errs ne "") {
+		die "${errs}Can't continue after import errors ".
+			"at @{[(caller(0))[1]]} line @{[(caller(0))[2]]}.\n";
+	}
+}
 
 # Logic duplicated from Params::Classify.  Duplicating it here avoids
 # an extensive and potentially circular dependency graph.

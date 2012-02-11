@@ -4,8 +4,10 @@ Module::Runtime - runtime module handling
 
 DESCRIPTION
 
-The functions exported by this module deal with runtime handling of Perl
-modules, which are normally handled at compile time.
+The functions exported by this module deal with runtime handling of
+Perl modules, which are normally handled at compile time.  This module
+avoids using any other modules, so that it can be used in low-level
+infrastructure.
 
 The functions of this module whose purpose is to load modules include a
 workaround for Perl core bug [perl #68590] where it exists, except for
