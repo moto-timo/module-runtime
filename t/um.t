@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 25;
+use Test::More tests => 27;
 
 BEGIN { use_ok "Module::Runtime", qw(use_module); }
 
@@ -66,6 +66,13 @@ SKIP: {
 		main::test_runtime_hint_hash("foo", 1);
 		1;
 	}; die $@ unless $@ eq "";
+}
+
+# no extra eval frame
+SKIP: {
+	skip "core bug makes this test crash", 3 if "$]" < 5.006001;
+	sub eval_test () { use_module("t::Eval") }
+	eval_test();
 }
 
 # successful version check

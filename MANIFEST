@@ -8,6 +8,7 @@ Makefile.PL
 README
 lib/Module/Runtime.pm
 t/ContextTest.pm
+t/Eval.pm
 t/HintTest.pm
 t/Simple.pm
 t/cmn.t
