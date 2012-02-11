@@ -85,5 +85,3 @@ test_use_module("Module::Runtime", 999);
 like($err, qr/^Module::Runtime version /);
 
 1;
-
-1;
