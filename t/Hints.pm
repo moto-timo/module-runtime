@@ -1,4 +1,4 @@
-package t::HintTest;
+package t::Hints;
 
 use warnings;
 use strict;

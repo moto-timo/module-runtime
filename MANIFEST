@@ -7,9 +7,9 @@ META.yml
 Makefile.PL
 README
 lib/Module/Runtime.pm
-t/ContextTest.pm
+t/Context.pm
 t/Eval.pm
-t/HintTest.pm
+t/Hints.pm
 t/Simple.pm
 t/cmn.t
 t/ivmn.t

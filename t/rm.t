@@ -33,7 +33,7 @@ is($err, "");
 is($result, 1);
 
 # module file scope sees scalar context regardless of calling context
-eval { require_module("t::ContextTest"); 1 };
+eval { require_module("t::Context"); 1 };
 is $@, "";
 
 # lexical hints don't leak through
@@ -51,10 +51,10 @@ SKIP: {
 	$^H{"Module::Runtime/test_a"} = 1;
 	is $^H{"Module::Runtime/test_a"}, 1;
 	is $^H{"Module::Runtime/test_b"}, undef;
-	require_module("t::HintTest");
+	require_module("t::Hints");
 	is $^H{"Module::Runtime/test_a"}, 1;
 	is $^H{"Module::Runtime/test_b"}, undef;
-	t::HintTest->import;
+	t::Hints->import;
 	is $^H{"Module::Runtime/test_a"}, 1;
 	is $^H{"Module::Runtime/test_b"}, 1;
 	eval q{

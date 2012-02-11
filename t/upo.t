@@ -45,10 +45,10 @@ SKIP: {
 	$^H{"Module::Runtime/test_a"} = 1;
 	is $^H{"Module::Runtime/test_a"}, 1;
 	is $^H{"Module::Runtime/test_b"}, undef;
-	use_package_optimistically("t::HintTest");
+	use_package_optimistically("t::Hints");
 	is $^H{"Module::Runtime/test_a"}, 1;
 	is $^H{"Module::Runtime/test_b"}, undef;
-	t::HintTest->import;
+	t::Hints->import;
 	is $^H{"Module::Runtime/test_a"}, 1;
 	is $^H{"Module::Runtime/test_b"}, 1;
 	eval q{
@@ -72,11 +72,11 @@ test_use_package_optimistically("Module::Runtime", 999);
 like $err, qr/^Module::Runtime version /;
 
 # even load module if $VERSION already set, unlike older behaviour
-$t::ContextTest::VERSION = undef;
-test_use_package_optimistically("t::ContextTest");
+$t::Context::VERSION = undef;
+test_use_package_optimistically("t::Context");
 is $err, "";
-is $result, "t::ContextTest";
-ok defined($t::ContextTest::VERSION);
-ok $INC{"t/ContextTest.pm"};
+is $result, "t::Context";
+ok defined($t::Context::VERSION);
+ok $INC{"t/Context.pm"};
 
 1;
