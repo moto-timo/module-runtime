@@ -1,4 +1,1 @@
-* work around 5.8 %INC bug
-http://rabbit.us/diff/require_module_incbug.patch
-
 * document ASCII-only name syntax more prominently, with notes about 5.16 changes

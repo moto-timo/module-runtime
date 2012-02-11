@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 27;
+use Test::More tests => 29;
 
 BEGIN { use_ok "Module::Runtime", qw(use_module); }
 
@@ -67,6 +67,12 @@ SKIP: {
 		1;
 	}; die $@ unless $@ eq "";
 }
+
+# broken module is visibly broken when re-required
+eval { use_module("t::Break") };
+like $@, qr/\A(?:broken |Attempt to reload )/;
+eval { use_module("t::Break") };
+like $@, qr/\A(?:broken |Attempt to reload )/;
 
 # no extra eval frame
 SKIP: {

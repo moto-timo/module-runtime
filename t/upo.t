@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 28;
+use Test::More tests => 30;
 
 BEGIN { use_ok "Module::Runtime", qw(use_package_optimistically); }
 
@@ -61,6 +61,12 @@ SKIP: {
 		1;
 	}; die $@ unless $@ eq "";
 }
+
+# broken module is visibly broken when re-required
+eval { use_package_optimistically("t::Break") };
+like $@, qr/\A(?:broken |Attempt to reload )/;
+eval { use_package_optimistically("t::Break") };
+like $@, qr/\A(?:broken |Attempt to reload )/;
 
 # successful version check
 test_use_package_optimistically("Module::Runtime", 0.001);

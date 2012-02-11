@@ -1,6 +1,9 @@
   * work around Perl core bug [perl #68590] regarding leakage of %^H
     into modules being loaded
 
+  * work around Perl core bug that made a failed module loading appear
+    successful when re-requiring the same module
+
   * duplicate is_string() from Params::Classify, rather than importing it,
     to avoid circular dependency problems (affecting both installation
     and runtime)
@@ -8,6 +11,8 @@
   * duplicate minimal exporting behaviour from Exporter, and avoid using
     the "warnings", "strict", and "parent" pragmata, to allow for possible
     future use of this module by any infrastructure module
+
+  * document core bug workarounds
 
   * tweak documentation of use_package_optimistically()
 
