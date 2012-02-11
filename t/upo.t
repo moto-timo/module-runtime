@@ -24,11 +24,11 @@ is $err, "";
 is $result, "Test::More";
 
 # a module that we'll load now
-test_use_package_optimistically("t::Mod0");
+test_use_package_optimistically("t::Simple");
 is $err, "";
-is $result, "t::Mod0";
+is $result, "t::Simple";
 no strict "refs";
-ok defined(${"t::Mod0::VERSION"});
+ok defined(${"t::Simple::VERSION"});
 
 # lexical hints don't leak through
 my $have_runtime_hint_hash = "$]" >= 5.009004;
@@ -72,11 +72,11 @@ test_use_package_optimistically("Module::Runtime", 999);
 like $err, qr/^Module::Runtime version /;
 
 # even load module if $VERSION already set, unlike older behaviour
-$t::Mod1::VERSION = undef;
-test_use_package_optimistically("t::Mod1");
+$t::ContextTest::VERSION = undef;
+test_use_package_optimistically("t::ContextTest");
 is $err, "";
-is $result, "t::Mod1";
-ok defined($t::Mod1::VERSION);
-ok $INC{"t/Mod1.pm"};
+is $result, "t::ContextTest";
+ok defined($t::ContextTest::VERSION);
+ok $INC{"t/ContextTest.pm"};
 
 1;

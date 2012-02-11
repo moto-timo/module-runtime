@@ -23,17 +23,17 @@ is($err, "");
 is($result, "Test::More");
 
 # a module that we'll load now
-test_use_module("t::Mod0");
+test_use_module("t::Simple");
 is($err, "");
-is($result, "t::Mod0");
+is($result, "t::Simple");
 
 # re-requiring the module that we just loaded
-test_use_module("t::Mod0");
+test_use_module("t::Simple");
 is($err, "");
-is($result, "t::Mod0");
+is($result, "t::Simple");
 
 # module file scope sees scalar context regardless of calling context
-eval { use_module("t::Mod1"); 1 };
+eval { use_module("t::ContextTest"); 1 };
 is $@, "";
 
 # lexical hints don't leak through

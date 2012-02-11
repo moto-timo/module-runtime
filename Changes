@@ -5,6 +5,8 @@
     to avoid circular dependency problems (affecting both installation
     and runtime)
 
+  * give test modules more meaningful names
+
   * convert .cvsignore to .gitignore
 
 version 0.011; 2011-10-24
