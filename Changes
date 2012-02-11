@@ -5,6 +5,8 @@
     to avoid circular dependency problems (affecting both installation
     and runtime)
 
+  * test behaviour with tainted module name
+
   * test lack of unwanted eval frame around require
 
   * give test modules more meaningful names

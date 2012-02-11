@@ -18,5 +18,6 @@ t/mnf.t
 t/pod_cvg.t
 t/pod_syn.t
 t/rm.t
+t/taint.t
 t/um.t
 t/upo.t
