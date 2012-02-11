@@ -40,6 +40,18 @@ Module::Runtime - runtime module handling
 The functions exported by this module deal with runtime handling of Perl
 modules, which are normally handled at compile time.
 
+The functions of this module whose purpose is to load modules include a
+workaround for Perl core bug [perl #68590] where it exists, except for
+Perls 5.9.4 up to 5.10.0 where no satisfactory workaround is possible in
+pure Perl.  This bug, present from Perl 5.6 up to Perl 5.10 and fixed
+in Perl 5.11.0, causes lexical state in one file to leak into another
+that is C<require>d/C<use>d from it.  The workaround means that modules
+loaded via this module don't suffer this pollution of their lexical
+state.  Modules loaded in other ways, or via this module on the Perl
+versions where the pure Perl workaround is impossible, remain vulnerable.
+The module L<Lexical::SealRequireHints> provides a complete workaround
+for this bug.
+
 =cut
 
 package Module::Runtime;
@@ -199,7 +211,18 @@ was already loaded.
 
 =cut
 
+BEGIN {
+	*_WORK_AROUND_HINT_LEAKAGE =
+		"$]" < 5.011 && !("$]" >= 5.009004 && "$]" < 5.010001)
+			? sub(){1} : sub(){0};
+}
+
 sub require_module($) {
+	# Localise %^H to work around [perl #68590], where the bug exists
+	# and this is a satisfactory workaround.  The bug consists of
+	# %^H state leaking into each required module, polluting the
+	# module's lexical state.
+	local %^H if _WORK_AROUND_HINT_LEAKAGE;
 	# Explicit scalar() here works around a Perl core bug, present
 	# in Perl 5.8 and 5.10, which allowed a require() in return
 	# position to pass a non-scalar context through to file scope
@@ -272,11 +295,9 @@ function work just like L</use_module>.
 sub use_package_optimistically($;$) {
 	my($name, $version) = @_;
 	check_module_name($name);
-	eval { local $SIG{__DIE__}; require(module_notional_filename($name)); };
-	die $@ if $@ ne "" && $@ !~ /\A
-		Can't\ locate\ .+\ at
-		\ \Q@{[__FILE__]}\E\ line\ \Q@{[__LINE__-1]}\E
-	/xs;
+	eval { local $SIG{__DIE__}; require_module($name); };
+	die $@ if $@ ne "" &&
+		$@ !~ /\ACan't locate .+ at \Q@{[__FILE__]}\E line/s;
 	$name->VERSION($version) if defined $version;
 	return $name;
 }
@@ -364,6 +385,7 @@ sub compose_module_name($$) {
 
 =head1 SEE ALSO
 
+L<Lexical::SealRequireHints>,
 L<base>,
 L<perlfunc/require>,
 L<perlfunc/use>

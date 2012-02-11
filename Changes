@@ -1,3 +1,6 @@
+  * work around Perl core bug [perl #68590] regarding leakage of %^H
+    into modules being loaded
+
   * duplicate is_string() from Params::Classify, rather than importing it,
     to avoid circular dependency problems (affecting both installation
     and runtime)

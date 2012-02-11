@@ -7,6 +7,17 @@ DESCRIPTION
 The functions exported by this module deal with runtime handling of Perl
 modules, which are normally handled at compile time.
 
+The functions of this module whose purpose is to load modules include a
+workaround for Perl core bug [perl #68590] where it exists, except for
+Perls 5.9.4 up to 5.10.0 where no satisfactory workaround is possible in
+pure Perl.  This bug, present from Perl 5.6 up to Perl 5.10 and fixed in
+Perl 5.11.0, causes lexical state in one file to leak into another that is
+"require"d/"use"d from it.  The workaround means that modules loaded via
+this module don't suffer this pollution of their lexical state.  Modules
+loaded in other ways, or via this module on the Perl versions where
+the pure Perl workaround is impossible, remain vulnerable.  The module
+Lexical::SealRequireHints provides a complete workaround for this bug.
+
 INSTALLATION
 
 	perl Build.PL

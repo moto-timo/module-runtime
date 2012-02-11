@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 15;
+use Test::More tests => 28;
 
 BEGIN { use_ok "Module::Runtime", qw(use_package_optimistically); }
 
@@ -29,6 +29,38 @@ is $err, "";
 is $result, "t::Mod0";
 no strict "refs";
 ok defined(${"t::Mod0::VERSION"});
+
+# lexical hints don't leak through
+my $have_runtime_hint_hash = "$]" >= 5.009004;
+sub test_runtime_hint_hash($$) {
+	SKIP: {
+		skip "no runtime hint hash", 1 unless $have_runtime_hint_hash;
+		is +((caller(0))[10] || {})->{$_[0]}, $_[1];
+	}
+}
+SKIP: {
+	skip "can't work around hint leakage in pure Perl", 13
+		if "$]" >= 5.009004 && "$]" < 5.010001;
+	$^H |= 0x20000 if "$]" < 5.009004;
+	$^H{"Module::Runtime/test_a"} = 1;
+	is $^H{"Module::Runtime/test_a"}, 1;
+	is $^H{"Module::Runtime/test_b"}, undef;
+	use_package_optimistically("t::HintTest");
+	is $^H{"Module::Runtime/test_a"}, 1;
+	is $^H{"Module::Runtime/test_b"}, undef;
+	t::HintTest->import;
+	is $^H{"Module::Runtime/test_a"}, 1;
+	is $^H{"Module::Runtime/test_b"}, 1;
+	eval q{
+		BEGIN { $^H |= 0x20000; $^H{foo} = 1; }
+		BEGIN { is $^H{foo}, 1; }
+		main::test_runtime_hint_hash("foo", 1);
+		BEGIN { use_package_optimistically("Math::BigInt"); }
+		BEGIN { is $^H{foo}, 1; }
+		main::test_runtime_hint_hash("foo", 1);
+		1;
+	}; die $@ unless $@ eq "";
+}
 
 # successful version check
 test_use_package_optimistically("Module::Runtime", 0.001);
