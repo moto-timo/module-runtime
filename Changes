@@ -1,3 +1,5 @@
+version 0.012; 2012-02-12
+
   * work around Perl core bug [perl #68590] regarding leakage of %^H
     into modules being loaded
 

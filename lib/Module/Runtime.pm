@@ -120,7 +120,7 @@ BEGIN { require 5.006; }
 BEGIN { ${^WARNING_BITS} = ""; }
 # Don't "use strict" here, to avoid dependencies.
 
-our $VERSION = "0.011";
+our $VERSION = "0.012";
 
 # Don't use Exporter here, to avoid dependencies.
 our @EXPORT_OK = qw(
@@ -481,7 +481,7 @@ Andrew Main (Zefram) <zefram@fysh.org>
 
 =head1 COPYRIGHT
 
-Copyright (C) 2004, 2006, 2007, 2009, 2010, 2011
+Copyright (C) 2004, 2006, 2007, 2009, 2010, 2011, 2012
 Andrew Main (Zefram) <zefram@fysh.org>
 
 =head1 LICENSE
