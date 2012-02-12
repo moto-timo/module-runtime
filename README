@@ -9,39 +9,17 @@ Perl modules, which are normally handled at compile time.  This module
 avoids using any other modules, so that it can be used in low-level
 infrastructure.
 
+The parts of this module that work with module names apply the same
+syntax that is used for barewords in Perl source.  In principle this
+syntax can vary between versions of Perl, and this module applies the
+syntax of the Perl on which it is running.  In practice the usable syntax
+hasn't changed yet, but there's a good chance of it changing in Perl 5.18.
+
 The functions of this module whose purpose is to load modules include
 workarounds for three old Perl core bugs regarding "require".  These
 workarounds are applied on any Perl version where the bugs exist, except
 for a case where one of the bugs cannot be adequately worked around in
 pure Perl.
-
-The first bug worked around is core bug [perl #68590], which causes
-lexical state in one file to leak into another that is "require"d/"use"d
-from it.  This bug is present from Perl 5.6 up to Perl 5.10, and is
-fixed in Perl 5.11.0.  From Perl 5.9.4 up to Perl 5.10.0 no satisfactory
-workaround is possible in pure Perl.  The workaround means that modules
-loaded via this module don't suffer this pollution of their lexical
-state.  Modules loaded in other ways, or via this module on the Perl
-versions where the pure Perl workaround is impossible, remain vulnerable.
-The module Lexical::SealRequireHints provides a complete workaround for
-this bug.
-
-The second bug worked around causes some kinds of failure in module
-loading, principally compilation errors in the loaded module, to be
-recorded in "%INC" as if they were successful, so later attempts to load
-the same module immediately indicate success.  This bug is present up
-to Perl 5.8.9, and is fixed in Perl 5.9.0.  The workaround means that a
-compilation error in a module loaded via this module won't be cached as
-a success.  Modules loaded in other ways remain liable to produce bogus
-"%INC" entries, and if a bogus entry exists then it will mislead this
-module if it is used to re-attempt loading.
-
-The third bug worked around causes the wrong context to be seen at
-file scope of a loaded module, if "require" is invoked in a location
-that inherits context from a higher scope.  This bug is present up to
-Perl 5.11.2, and is fixed in Perl 5.11.3.  The workaround means that
-a module loaded via this module will always see the correct context.
-Modules loaded in other ways remain vulnerable.
 
 INSTALLATION
 

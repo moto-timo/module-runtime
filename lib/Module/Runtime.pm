@@ -42,11 +42,42 @@ Perl modules, which are normally handled at compile time.  This module
 avoids using any other modules, so that it can be used in low-level
 infrastructure.
 
+The parts of this module that work with module names apply the same
+syntax that is used for barewords in Perl source.  In principle this
+syntax can vary between versions of Perl, and this module applies the
+syntax of the Perl on which it is running.  In practice the usable syntax
+hasn't changed yet, but there's a good chance of it changing in Perl 5.18.
+
 The functions of this module whose purpose is to load modules include
 workarounds for three old Perl core bugs regarding C<require>.  These
 workarounds are applied on any Perl version where the bugs exist, except
 for a case where one of the bugs cannot be adequately worked around in
 pure Perl.
+
+=head2 Module name syntax
+
+The usable module name syntax has not changed from Perl 5.000 up to
+Perl 5.15.7.  The syntax is composed entirely of ASCII characters.
+From Perl 5.6 onwards there has been some attempt to allow the use of
+non-ASCII Unicode characters in Perl source, but it was fundamentally
+broken (like the entirety of Perl 5.6's Unicode handling) and remained
+pretty much entirely unusable until it got some attention in the Perl
+5.15 series.  Although Unicode is now consistently accepted by the
+parser in some places, it remains broken for module names.  Furthermore,
+there has not yet been any work on how to map Unicode module names into
+filenames, so in that respect also Unicode module names are unusable.
+This may finally be addressed in the Perl 5.17 series.
+
+The module name syntax is, precisely: the string must consist of one or
+more segments separated by C<::>; each segment must consist of one or more
+identifier characters (ASCII alphanumerics plus "_"); the first character
+of the string must not be a digit.  Thus "C<IO::File>", "C<warnings>",
+and "C<foo::123::x_0>" are all valid module names, whereas "C<IO::>"
+and "C<1foo::bar>" are not.  C<'> separators are not permitted by this
+module, though they remain usable in Perl source, being translated to
+C<::> in the parser.
+
+=head2 Core bugs worked around
 
 The first bug worked around is core bug [perl #68590], which causes
 lexical state in one file to leak into another that is C<require>d/C<use>d
@@ -140,15 +171,6 @@ anchors yourself.
 =item $module_name_rx
 
 Matches a valid Perl module name in bareword syntax.
-The rule for this, precisely, is: the string must
-consist of one or more segments separated by C<::>; each segment must
-consist of one or more identifier characters (alphanumerics plus "_");
-the first character of the string must not be a digit.  Thus "C<IO::File>",
-"C<warnings>", and "C<foo::123::x_0>" are all valid module names, whereas
-"C<IO::>" and "C<1foo::bar>" are not.
-Only ASCII characters are permitted; Perl's handling of non-ASCII
-characters in source code is inconsistent.
-C<'> separators are not permitted.
 
 =cut
 

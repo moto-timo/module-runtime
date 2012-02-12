@@ -14,6 +14,9 @@
 
   * document core bug workarounds
 
+  * document module name syntax more prominently, and discuss the state
+    of Unicode handling
+
   * tweak documentation of use_package_optimistically()
 
   * test behaviour with tainted module name
