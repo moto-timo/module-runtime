@@ -2,7 +2,10 @@
 # script cannot itself use warnings, Test::More, or any other module.
 
 BEGIN { print "1..1\n"; }
+our(%preloaded, @extraloaded);
+BEGIN { %preloaded = %INC; }
 use Module::Runtime qw(require_module);
-print join(" ", sort keys %INC) eq "Module/Runtime.pm" ? "" : "not ", "ok 1\n";
+BEGIN { @extraloaded = sort grep { !exists($preloaded{$_}) } keys %INC; }
+print join(" ", @extraloaded) eq "Module/Runtime.pm" ? "" : "not ", "ok 1\n";
 
 1;
