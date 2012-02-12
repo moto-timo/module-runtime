@@ -45,6 +45,8 @@ sub test_runtime_hint_hash($$) {
 	}
 }
 SKIP: {
+	skip "core bug makes this test crash", 13
+		if "$]" >= 5.008 && "$]" < 5.008004;
 	skip "can't work around hint leakage in pure Perl", 13
 		if "$]" >= 5.009004 && "$]" < 5.010001;
 	$^H |= 0x20000 if "$]" < 5.009004;
@@ -76,7 +78,7 @@ like $@, qr/\A(?:broken |Attempt to reload )/;
 
 # no extra eval frame
 SKIP: {
-	skip "core bug makes this test crash", 3 if "$]" < 5.006001;
+	skip "core bug makes this test crash", 2 if "$]" < 5.006001;
 	sub eval_test () { require_module("t::Eval") }
 	eval_test();
 }

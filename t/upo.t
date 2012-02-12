@@ -39,6 +39,8 @@ sub test_runtime_hint_hash($$) {
 	}
 }
 SKIP: {
+	skip "core bug makes this test crash", 13
+		if "$]" >= 5.008 && "$]" < 5.008004;
 	skip "can't work around hint leakage in pure Perl", 13
 		if "$]" >= 5.009004 && "$]" < 5.010001;
 	$^H |= 0x20000 if "$]" < 5.009004;
