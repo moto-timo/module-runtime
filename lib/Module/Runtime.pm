@@ -111,7 +111,9 @@ Modules loaded in other ways remain vulnerable.
 
 package Module::Runtime;
 
-{ use 5.006; }
+# Don't "use 5.006" here, because Perl 5.15.6 will load feature.pm if
+# the version check is done that way.
+BEGIN { require 5.006; }
 # Don't "use warnings" here, to avoid dependencies.  Do standardise the
 # warning status by lexical override; unfortunately the only safe bitset
 # to build in is the empty set, equivalent to "no warnings".

@@ -9,8 +9,8 @@
     and runtime)
 
   * duplicate minimal exporting behaviour from Exporter, and avoid using
-    the "warnings", "strict", and "parent" pragmata, to allow for possible
-    future use of this module by any infrastructure module
+    the "feature", "warnings", "strict", and "parent" pragmata, to allow
+    for possible future use of this module by any infrastructure module
 
   * document core bug workarounds
 
