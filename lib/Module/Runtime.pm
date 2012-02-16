@@ -120,7 +120,7 @@ BEGIN { require 5.006; }
 BEGIN { ${^WARNING_BITS} = ""; }
 # Don't "use strict" here, to avoid dependencies.
 
-our $VERSION = "0.012";
+our $VERSION = "0.013";
 
 # Don't use Exporter here, to avoid dependencies.
 our @EXPORT_OK = qw(
