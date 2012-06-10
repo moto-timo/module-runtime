@@ -1,3 +1,8 @@
+* mst would like fewer build-time deps, to install more easily on 5.8 where M:B is not bundled in core
+
+* https://github.com/karenetheridge/dist-checkconflicts/commits/topic/handle_broken_conflicts in t/02-conflicts.t
+https://rt.cpan.org/Ticket/Update.html?id=75486
+
 * in upo(), try to make recognition of module non-existence specific to the topmost module being loaded: can currently be confused by an existing module that errors during loading by means of a require_module()
 	+ maybe just make it error at a different line, from which errors are never propagated
 	+ maybe include target module filename in pattern to match, if that can be done cross-platform
