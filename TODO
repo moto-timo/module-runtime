@@ -7,3 +7,5 @@
 
 * does PP L:SRH break recognition of module non-existence by changing the file:line reported in the intercepted error message?
 	+ test with L:SRH loaded
+
+* wishlist: should have something akin to compose_module_name that supports the evolved pseudostandard syntax used by DBIx::Class, Catalyst, Moose
