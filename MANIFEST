@@ -24,3 +24,4 @@ t/rm.t
 t/taint.t
 t/um.t
 t/upo.t
+t/upo_overridden.t

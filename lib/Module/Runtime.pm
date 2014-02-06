@@ -310,11 +310,11 @@ sub require_module($) {
 		my $notional_filename = &module_notional_filename;
 		my $guard = bless([ $notional_filename ],
 				"Module::Runtime::__GUARD__");
-		my $result = require($notional_filename);
+		my $result = CORE::require($notional_filename);
 		pop @$guard;
 		return $result;
 	} else {
-		return scalar(require(&module_notional_filename));
+		return scalar(CORE::require(&module_notional_filename));
 	}
 }
 
@@ -467,6 +467,17 @@ sub compose_module_name($$) {
 }
 
 =back
+
+=head1 BUGS
+
+On Perl versions 5.7.2 to 5.8.8, if C<require> is overridden by the
+C<CORE::GLOBAL> mechanism, it is likely to break the heuristics used by
+L</use_package_optimistically>, making it signal an error for a missing
+module rather than assume that it was already loaded.  From Perl 5.8.9
+onwards, and on 5.7.1 and earlier, this module can avoid being confused
+by such an override.  On the affected versions, a C<require> override
+might be installed by L<Lexical::SealRequireHints>, if something requires
+its bugfix but for some reason its XS implementation isn't available.
 
 =head1 SEE ALSO
 
