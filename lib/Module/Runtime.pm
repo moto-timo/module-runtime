@@ -42,11 +42,12 @@ Perl modules, which are normally handled at compile time.  This module
 avoids using any other modules, so that it can be used in low-level
 infrastructure.
 
-The parts of this module that work with module names apply the same
-syntax that is used for barewords in Perl source.  In principle this
-syntax can vary between versions of Perl, and this module applies the
-syntax of the Perl on which it is running.  In practice the usable syntax
-hasn't changed yet, but there's a good chance of it changing in Perl 5.18.
+The parts of this module that work with module names apply the same syntax
+that is used for barewords in Perl source.  In principle this syntax
+can vary between versions of Perl, and this module applies the syntax of
+the Perl on which it is running.  In practice the usable syntax hasn't
+changed yet.  There's some intent for Unicode module names to be supported
+in the future, but this hasn't yet amounted to any consistent facility.
 
 The functions of this module whose purpose is to load modules include
 workarounds for three old Perl core bugs regarding C<require>.  These
@@ -57,7 +58,7 @@ pure Perl.
 =head2 Module name syntax
 
 The usable module name syntax has not changed from Perl 5.000 up to
-Perl 5.15.7.  The syntax is composed entirely of ASCII characters.
+Perl 5.19.8.  The syntax is composed entirely of ASCII characters.
 From Perl 5.6 onwards there has been some attempt to allow the use of
 non-ASCII Unicode characters in Perl source, but it was fundamentally
 broken (like the entirety of Perl 5.6's Unicode handling) and remained
@@ -66,7 +67,6 @@ pretty much entirely unusable until it got some attention in the Perl
 parser in some places, it remains broken for module names.  Furthermore,
 there has not yet been any work on how to map Unicode module names into
 filenames, so in that respect also Unicode module names are unusable.
-This may finally be addressed in the Perl 5.17 series.
 
 The module name syntax is, precisely: the string must consist of one or
 more segments separated by C<::>; each segment must consist of one or more

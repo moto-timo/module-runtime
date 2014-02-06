@@ -12,6 +12,9 @@
     isn't available, the outer module will be perceived as broken rather
     than missing
 
+  * update documentation notes about the state of Unicode handling for
+    module names
+
   * in META.{yml,json}, point to public git repository
 
 version 0.013; 2012-02-16

@@ -9,11 +9,12 @@ Perl modules, which are normally handled at compile time.  This module
 avoids using any other modules, so that it can be used in low-level
 infrastructure.
 
-The parts of this module that work with module names apply the same
-syntax that is used for barewords in Perl source.  In principle this
-syntax can vary between versions of Perl, and this module applies the
-syntax of the Perl on which it is running.  In practice the usable syntax
-hasn't changed yet, but there's a good chance of it changing in Perl 5.18.
+The parts of this module that work with module names apply the same syntax
+that is used for barewords in Perl source.  In principle this syntax
+can vary between versions of Perl, and this module applies the syntax of
+the Perl on which it is running.  In practice the usable syntax hasn't
+changed yet.  There's some intent for Unicode module names to be supported
+in the future, but this hasn't yet amounted to any consistent facility.
 
 The functions of this module whose purpose is to load modules include
 workarounds for three old Perl core bugs regarding "require".  These
