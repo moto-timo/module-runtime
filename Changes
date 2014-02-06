@@ -8,6 +8,8 @@
     isn't available, the outer module will be perceived as broken rather
     than missing
 
+  * in META.{yml,json}, point to public git repository
+
 version 0.013; 2012-02-16
 
   * fix false failure of the test for lack of unintended dependencies
