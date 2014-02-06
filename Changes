@@ -2,6 +2,10 @@
     to avoid use_package_optimistically() being misled into treating
     missing modules as broken
 
+  * bugfix: in use_module() and use_package_optimistically(), pass a
+    supplied VERSION parameter through for the version check even if it
+    is undef
+
   * tighten use_package_optimistically()'s recognition of can't-locate
     errors (the same way that base.pm has recently been tightened),
     so that, when a module fails to load because a module that it uses

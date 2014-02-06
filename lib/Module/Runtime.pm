@@ -346,9 +346,7 @@ the synopsis.
 sub use_module($;$) {
 	my($name, $version) = @_;
 	require_module($name);
-	if(defined $version) {
-		$name->VERSION($version);
-	}
+	$name->VERSION($version) if @_ >= 2;
 	return $name;
 }
 
@@ -385,7 +383,7 @@ sub use_package_optimistically($;$) {
 		($@ !~ /\ACan't locate \Q$fn\E .+ at \Q@{[__FILE__]}\E line/s ||
 		 $@ =~ /^Compilation\ failed\ in\ require
 			 \ at\ \Q@{[__FILE__]}\E\ line/xm);
-	$name->VERSION($version) if defined $version;
+	$name->VERSION($version) if @_ >= 2;
 	return $name;
 }
 

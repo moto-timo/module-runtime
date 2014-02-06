@@ -1,39 +1,33 @@
 use warnings;
 use strict;
 
-use Test::More tests => 29;
+use Test::More tests => 37;
 
 BEGIN { use_ok "Module::Runtime", qw(use_module); }
 
-my($result, $err);
-
-sub test_use_module($;$) {
-	my($name, $version) = @_;
-	$result = eval { use_module($name, $version) };
-	$err = $@;
-}
+my $result;
 
 # a module that doesn't exist
-test_use_module("t::NotExist");
-like($err, qr/^Can't locate /);
+$result = eval { use_module("t::NotExist") };
+like($@, qr/^Can't locate /);
 
 # a module that's already loaded
-test_use_module("Test::More");
-is($err, "");
+$result = eval { use_module("Test::More") };
+is($@, "");
 is($result, "Test::More");
 
 # a module that we'll load now
-test_use_module("t::Simple");
-is($err, "");
+$result = eval { use_module("t::Simple") };
+is($@, "");
 is($result, "t::Simple");
 
 # re-requiring the module that we just loaded
-test_use_module("t::Simple");
-is($err, "");
+$result = eval { use_module("t::Simple") };
+is($@, "");
 is($result, "t::Simple");
 
 # module file scope sees scalar context regardless of calling context
-eval { use_module("t::Context"); 1 };
+$result = eval { use_module("t::Context"); 1 };
 is $@, "";
 
 # lexical hints don't leak through
@@ -84,12 +78,34 @@ SKIP: {
 }
 
 # successful version check
-test_use_module("Module::Runtime", 0.001);
-is($err, "");
+$result = eval { use_module("Module::Runtime", 0.001) };
+is($@, "");
 is($result, "Module::Runtime");
 
 # failing version check
-test_use_module("Module::Runtime", 999);
-like($err, qr/^Module::Runtime version /);
+$result = eval { use_module("Module::Runtime", 999) };
+like($@, qr/^Module::Runtime version /);
+
+# make sure any version argument gets passed through
+my @version_calls;
+sub t::HasVersion::VERSION {
+	push @version_calls, [@_];
+}
+$INC{"t/HasVersion.pm"} = 1;
+eval { use_module("t::HasVersion") };
+is $@, "";
+is_deeply \@version_calls, [];
+@version_calls = ();
+eval { use_module("t::HasVersion", 2) };
+is $@, "";
+is_deeply \@version_calls, [["t::HasVersion",2]];
+@version_calls = ();
+eval { use_module("t::HasVersion", "wibble") };
+is $@, "";
+is_deeply \@version_calls, [["t::HasVersion","wibble"]];
+@version_calls = ();
+eval { use_module("t::HasVersion", undef) };
+is $@, "";
+is_deeply \@version_calls, [["t::HasVersion",undef]];
 
 1;

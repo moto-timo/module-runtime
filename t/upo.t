@@ -1,31 +1,25 @@
 use warnings;
 use strict;
 
-use Test::More tests => 34;
+use Test::More tests => 42;
 
 BEGIN { use_ok "Module::Runtime", qw(use_package_optimistically); }
 
-my($result, $err);
-
-sub test_use_package_optimistically($;$) {
-	my($name, $version) = @_;
-	$result = eval { use_package_optimistically($name, $version) };
-	$err = $@;
-}
+my $result;
 
 # a module that doesn't exist
-test_use_package_optimistically("t::NotExist");
-is $err, "";
+$result = eval { use_package_optimistically("t::NotExist") };
+is $@, "";
 is $result, "t::NotExist";
 
 # a module that's already loaded
-test_use_package_optimistically("Test::More");
-is $err, "";
+$result = eval { use_package_optimistically("Test::More") };
+is $@, "";
 is $result, "Test::More";
 
 # a module that we'll load now
-test_use_package_optimistically("t::Simple");
-is $err, "";
+$result = eval { use_package_optimistically("t::Simple") };
+is $@, "";
 is $result, "t::Simple";
 no strict "refs";
 ok defined(${"t::Simple::VERSION"});
@@ -85,20 +79,42 @@ eval { use_package_optimistically("t::Nest1") };
 like $@, qr/\A(?:Can't locate |Attempt to reload )/;
 
 # successful version check
-test_use_package_optimistically("Module::Runtime", 0.001);
-is $err, "";
+$result = eval { use_package_optimistically("Module::Runtime", 0.001) };
+is $@, "";
 is $result, "Module::Runtime";
 
 # failing version check
-test_use_package_optimistically("Module::Runtime", 999);
-like $err, qr/^Module::Runtime version /;
+$result = eval { use_package_optimistically("Module::Runtime", 999) };
+like $@, qr/^Module::Runtime version /;
 
 # even load module if $VERSION already set, unlike older behaviour
 $t::Context::VERSION = undef;
-test_use_package_optimistically("t::Context");
-is $err, "";
+$result = eval { use_package_optimistically("t::Context") };
+is $@, "";
 is $result, "t::Context";
 ok defined($t::Context::VERSION);
 ok $INC{"t/Context.pm"};
+
+# make sure any version argument gets passed through
+my @version_calls;
+sub t::HasVersion::VERSION {
+	push @version_calls, [@_];
+}
+$INC{"t/HasVersion.pm"} = 1;
+eval { use_package_optimistically("t::HasVersion") };
+is $@, "";
+is_deeply \@version_calls, [];
+@version_calls = ();
+eval { use_package_optimistically("t::HasVersion", 2) };
+is $@, "";
+is_deeply \@version_calls, [["t::HasVersion",2]];
+@version_calls = ();
+eval { use_package_optimistically("t::HasVersion", "wibble") };
+is $@, "";
+is_deeply \@version_calls, [["t::HasVersion","wibble"]];
+@version_calls = ();
+eval { use_package_optimistically("t::HasVersion", undef) };
+is $@, "";
+is_deeply \@version_calls, [["t::HasVersion",undef]];
 
 1;
