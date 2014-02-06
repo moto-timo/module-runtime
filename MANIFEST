@@ -11,7 +11,8 @@ t/Break.pm
 t/Context.pm
 t/Eval.pm
 t/Hints.pm
-t/Nest.pm
+t/Nest0.pm
+t/Nest1.pm
 t/Simple.pm
 t/cmn.t
 t/dependency.t

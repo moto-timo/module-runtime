@@ -1,11 +1,3 @@
 * mst would like fewer build-time deps, to install more easily on 5.8 where M:B is not bundled in core
 
-* in upo(), try to make recognition of module non-existence specific to the topmost module being loaded: can currently be confused by an existing module that errors during loading by means of a require_module()
-	+ maybe just make it error at a different line, from which errors are never propagated
-	+ maybe include target module filename in pattern to match, if that can be done cross-platform
-	+ maybe try a nasty trick with magic object in @INC
-
-* does PP L:SRH break recognition of module non-existence by changing the file:line reported in the intercepted error message?
-	+ test with L:SRH loaded
-
 * wishlist: should have something akin to compose_module_name that supports the evolved pseudostandard syntax used by DBIx::Class, Catalyst, Moose
