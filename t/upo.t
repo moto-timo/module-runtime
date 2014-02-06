@@ -1,7 +1,7 @@
 use warnings;
 use strict;
 
-use Test::More tests => 30;
+use Test::More tests => 32;
 
 BEGIN { use_ok "Module::Runtime", qw(use_package_optimistically); }
 
@@ -69,6 +69,13 @@ eval { use_package_optimistically("t::Break") };
 like $@, qr/\A(?:broken |Attempt to reload )/;
 eval { use_package_optimistically("t::Break") };
 like $@, qr/\A(?:broken |Attempt to reload )/;
+
+# module broken by virtue of trying to non-optimistically load a
+# non-existent module
+eval { use_package_optimistically("t::Nest") };
+like $@, qr/\ACan't locate /;
+eval { use_package_optimistically("t::Nest") };
+like $@, qr/\A(?:Can't locate |Attempt to reload )/;
 
 # successful version check
 test_use_package_optimistically("Module::Runtime", 0.001);

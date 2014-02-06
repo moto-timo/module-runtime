@@ -366,8 +366,8 @@ is signalled.  That's the optimistic bit.
 
 This is mostly the same operation that is performed by the L<base> pragma
 to ensure that the specified base classes are available.  The behaviour
-of L<base> was simplified in version 2.18, and this function changed
-to match.
+of L<base> was simplified in version 2.18, and later improved in version
+2.20, and on both occasions this function changed to match.
 
 If a I<VERSION> is specified, the C<VERSION> method of the loaded package is
 called with the specified I<VERSION> as an argument.  This normally serves
@@ -379,10 +379,12 @@ function work just like L</use_module>.
 
 sub use_package_optimistically($;$) {
 	my($name, $version) = @_;
-	check_module_name($name);
+	my $fn = module_notional_filename($name);
 	eval { local $SIG{__DIE__}; require_module($name); };
 	die $@ if $@ ne "" &&
-		$@ !~ /\ACan't locate .+ at \Q@{[__FILE__]}\E line/s;
+		($@ !~ /\ACan't locate \Q$fn\E .+ at \Q@{[__FILE__]}\E line/s ||
+		 $@ =~ /^Compilation\ failed\ in\ require
+			 \ at\ \Q@{[__FILE__]}\E\ line/xm);
 	$name->VERSION($version) if defined $version;
 	return $name;
 }

@@ -2,6 +2,12 @@
     to avoid use_package_optimistically() being misled into treating
     missing modules as broken
 
+  * tighten use_package_optimistically()'s recognition of can't-locate
+    errors (the same way that base.pm has recently been tightened),
+    so that, when a module fails to load because a module that it uses
+    isn't available, the outer module will be perceived as broken rather
+    than missing
+
 version 0.013; 2012-02-16
 
   * fix false failure of the test for lack of unintended dependencies
