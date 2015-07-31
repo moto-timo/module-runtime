@@ -120,7 +120,7 @@ BEGIN { require 5.006; }
 BEGIN { ${^WARNING_BITS} = ""; }
 # Don't "use strict" here, to avoid dependencies.
 
-our $VERSION = "0.014";
+our $VERSION = "0.015";
 
 # Don't use Exporter here, to avoid dependencies.
 our @EXPORT_OK = qw(
@@ -489,6 +489,8 @@ L<perlfunc/use>
 =head1 AUTHOR
 
 Andrew Main (Zefram) <zefram@fysh.org>
+
+Tim Orling (Timo) <ticotimo@gmail.com>
 
 =head1 COPYRIGHT
 

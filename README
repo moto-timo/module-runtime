@@ -24,14 +24,16 @@ pure Perl.
 
 INSTALLATION
 
-	perl Build.PL
-	./Build
-	./Build test
-	./Build install
+	perl Makefile.PL
+	make
+	make test
+	make install
 
 AUTHOR
 
 Andrew Main (Zefram) <zefram@fysh.org>
+
+Tim Orling <ticotimo@gmail.com>
 
 COPYRIGHT
 
